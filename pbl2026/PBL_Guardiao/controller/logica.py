@@ -26,11 +26,21 @@ def colisao_recuo_inimigos():
     
     for inimigo in c.inimigos[:]:
         dx = c.player.centerx - inimigo['rect'].centerx
-        dy =c.player.centery - inimigo['rect'].centery
+        dy = c.player.centery - inimigo['rect'].centery
         distancia = (dx**2 + dy**2) ** 0.5
         
         if distancia < PX_RAIO_LIMITE:
-            inimigo['rect'].y -= 2
+            if dx > 0:
+                inimigo['rect'].x -= 4
+            else:
+                inimigo['rect'].x += 4
+                
+            if inimigo['rect'].x < 0:
+                inimigo['rect'].x = 0
+            elif inimigo['rect'].x + inimigo['rect'].width > c.WIDTH:
+                inimigo['rect'].x = c.WIDTH - inimigo['rect'].width
+                
+            inimigo['rect'].y += int(c.velocidade_inimigos)
         else:
             inimigo['rect'].y += int(c.velocidade_inimigos)
             
@@ -308,7 +318,7 @@ def main_loop():
             b.y += 2
             if b.colliderect(c.player):
                 # Restringe a cura máxima com base na dificuldade para evitar trapaças 
-                teto_vida = 3 if c.estado["nivel_dificuldade_ativa"] == 'facil' else (2 if c.estado["nivel_dificuldade_ativa"] == 'medio' else 1)
+                teto_vida = 3 if c.estado["nivel_dificuldade_ativa"] == 'facil' else 2
                 if c.estado["vida"] < teto_vida: 
                     c.estado["vida"] += 1 
                 if a.assets["sfx_bacta"]: 

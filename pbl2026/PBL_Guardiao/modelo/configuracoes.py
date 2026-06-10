@@ -42,16 +42,16 @@ def alternar_pausar_musica():
 # Cada lista representa uma linha horizontal de spawn. O número 1 indica a presença física
 # de uma nave Tie Fighter activa naquela coordenada, e 0 indica espaço vazio.
 ondas = [
-    [0, 1, 0, 1, 0, 1, 0, 1], # Onda 1: Inimigos intercalados
-    [1, 1, 1, 1, 1, 1, 1, 1], # Onda 2: Linha de frente imperial completa
-    [0, 1, 1, 0, 1, 1, 0, 1], # Onda 3: Flancos imperiais protegidos e centro aberto
+    [0, 1, 0, 1, 0, 1, 0, 0], # Onda 1: Inimigos intercalados
+    [1, 0, 1, 1, 0, 1, 0, 1], # Onda 2: Linha de frente imperial completa
+    [0, 1, 1, 0, 1, 0, 1, 0], # Onda 3: Flancos imperiais protegidos e centro aberto
 ]
 
 # Define as velocidades iniciais, limites e acelerações para cada nível de dificuldade.
 config_dificuldade = {
     'facil': {'inicial': 1.5, 'limite': 3.0, 'incremento': 0.2},
-    'medio': {'inicial': 2.5, 'limite': 5.0, 'incremento': 0.4},
-    'dificil': {'inicial': 3.5, 'limite': 8.0, 'incremento': 0.6}
+    'medio': {'inicial': 2.5, 'limite': 4.5, 'incremento': 0.3},
+    'dificil': {'inicial': 3.0, 'limite': 5.0, 'incremento': 0.4}
 }
 velocidade_inimigos = 1.0 # Velocidade atual das naves na rodada, calculada pelo logica.py
 
@@ -72,9 +72,9 @@ def controle_dificuldade():
     if estado["nivel_dificuldade_ativa"] == 'facil': 
         estado["vida"] = 3
     elif estado["nivel_dificuldade_ativa"] == 'medio': 
-        estado["vida"] = 2
+        estado["vida"] = 3
     elif estado["nivel_dificuldade_ativa"] == 'dificil': 
-        estado["vida"] = 1
+        estado["vida"] = 3
         
 def chk_colisao_player_inimigos():
     """Detecta colisão direta e retorna posicao do impacto"""
