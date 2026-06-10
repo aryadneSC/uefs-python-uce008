@@ -58,9 +58,9 @@ def obter_nome_jogador():
     while True:
         c.screen.fill(m.PRETO)
         
-        prompt = a.fonte_titulo.render("NOVO RECORDISTA! DIGITE SEU NOME:", True, m.AMARELO)
-        txt_nome = a.fonte_titulo.render(nome + "_", True, m.BRANCO)
-        alerta = a.fonte_hud.render("Pressione ENTER para Salvar", True, m.VERDE_MUSGO)
+        prompt = a.assets["fonte_titulo"].render("NOVO RECORDISTA! DIGITE SEU NOME:", True, m.AMARELO)
+        txt_nome = a.assets["fonte_titulo"].render(nome + "_", True, m.BRANCO)
+        alerta = a.assets["fonte_hud"].render("Pressione ENTER para Salvar", True, m.VERDE_MUSGO)
         
         c.screen.blit(prompt, (WIDTH // 2 - prompt.get_width() // 2, HEIGHT // 3))
         c.screen.blit(txt_nome, (WIDTH // 2 - txt_nome.get_width() // 2, HEIGHT // 2))
@@ -85,13 +85,13 @@ def exibir_ranking():
     """Exibe na tela a tabela das 10 maiores pontuações persistidas no JSON."""
     while True:
         c.screen.fill(m.PRETO)
-        titulo = a.fonte_titulo.render("TOP 10 - HALL DA FAMA", True, m.AMARELO)
+        titulo = a.assets["fonte_titulo"].render("TOP 10 - HALL DA FAMA", True, m.AMARELO)
         c.screen.blit(titulo, (WIDTH // 2 - titulo.get_width() // 2, 50))
         
         ranking = load_ranking() # Requisita os recordes deserializados do arquivo JSON
         if not ranking:
             # Mensagem preventiva caso o arquivo JSON seja recém-criado ou esteja vazio
-            vazio_txt = a.fonte_hud.render("NENHUM SCORE REGISTRADO AINDA.", True, m.CINZA)
+            vazio_txt = a.assets["fonte_hud"].render("NENHUM SCORE REGISTRADO AINDA.", True, m.CINZA)
             c.screen.blit(vazio_txt, (WIDTH // 2 - vazio_txt.get_width() // 2, HEIGHT // 2))
         else:
             # Varre os elementos retornados do JSON para imprimir o placar geral linha por linha
@@ -100,10 +100,10 @@ def exibir_ranking():
                 texto_linha = f"{i+1}. {entrada['nome']:<12} - {entrada['pontuacao']} PTS"
                 # Primeiro colocado (Top 1) em verde, e os demais recordistas em branco
                 cor_linha = m.VERDE if i == 0 else m.BRANCO
-                txt_render = a.fonte_hud.render(texto_linha, True, cor_linha)
+                txt_render = a.assets["fonte_hud"].render(texto_linha, True, cor_linha)
                 c.screen.blit(txt_render, (WIDTH // 2 - 200, 120 + i * 35)) # Incrementa 35 pixels verticais por linha (Grid vertical)
                 
-        instrucao = a.fonte_titulo.render("PRESSIONE ENTER PARA VOLTAR", True, m.VERDE_MUSGO)
+        instrucao = a.assets["fonte_titulo"].render("PRESSIONE ENTER PARA VOLTAR", True, m.VERDE_MUSGO)
         c.screen.blit(instrucao, (WIDTH // 2 - instrucao.get_width() // 2, HEIGHT - 70))
         pygame.display.flip()
         

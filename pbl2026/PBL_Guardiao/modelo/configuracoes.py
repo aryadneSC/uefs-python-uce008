@@ -40,7 +40,7 @@ def alternar_pausar_musica():
 
 # Explicação:
 # Cada lista representa uma linha horizontal de spawn. O número 1 indica a presença física
-# de uma nave Tie Fighter ativa naquela coordenada, e 0 indica espaço vazio.
+# de uma nave Tie Fighter activa naquela coordenada, e 0 indica espaço vazio.
 ondas = [
     [0, 1, 0, 1, 0, 1, 0, 1], # Onda 1: Inimigos intercalados
     [1, 1, 1, 1, 1, 1, 1, 1], # Onda 2: Linha de frente imperial completa

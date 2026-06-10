@@ -21,7 +21,7 @@ TURQUESA = (64, 204, 208)
 def tela_narrativa():
     """
     Exibe a introdução do universo de Star Wars contextualizando a missão do Guardião.
-    Correção de erro: Antigamente, essa tela ficava dentro da jogo.py gerando NameError
+    Contorno de erro: Antigamente, essa tela ficava dentro da jogo.py gerando NameError
     porque as fontes ainda não tinham sido inicializadas no motor gráfico. Agora ela roda em escopo isolado.
     """
     while True:
@@ -34,9 +34,9 @@ def tela_narrativa():
             "A terrível Frota Imperial avança",
             "contra a base secreta",
             "do Planeta Aliado Kashyyyk!",
-            "Nossas forças estão quase no fim",
+            "Nossas forças estão quase no fim...",
             "",
-            "Guardião, você é nossa única esperança", 
+            "Guardião! Você é nossa única esperança", 
             "de expulsar as tropas inimigas.",
             "Que a Força esteja com você...", "",
         ]
@@ -74,7 +74,7 @@ def mostrar_menu_pausa():
     pygame.display.flip() 
     
 def desenhar_botao_pausar_msc():
-    img_msc = getattr(a, "img_icone_msc", None)
+    img_msc = a.assets.get("img_icone_msc", None)
     if img_msc:
         indice_imagem = 1 if c.estado["musica_pausada"] else 0
         c.screen.blit(img_msc[indice_imagem], c.msc_botao)

@@ -73,7 +73,7 @@ def mover_inimigos():
     # Correção: Uso da cópia rasa [:] impede travamento ou ValueError caso 
     # um elemento seja excluído da lista original enquanto o loop 'for' a itera.
     for inimigo in c.inimigos[:]:
-        # Incrementa o eixo Y com base na velocidade calculada da dificuldade
+        # Incrementa o eixo Y com base na velocidade calculated da dificuldade
         inimigo['rect'].y += int(c.velocidade_inimigos)
         
         # Se ultrapassar o limite inferior da tela... --->
@@ -196,11 +196,11 @@ def capturar_evento_e_reiniciar_jogo():
                     a.tocar_musica_tema()        # Recarrega a trilha sonora de partida
                     iniciar_jogo()               # Reseta os arrays da memória
                     limpar_tela()
-                    main_loop()                  # Reengaja o loop central de processamento
                     return
                 elif e.key == pygame.K_ESCAPE:
                     pygame.mixer.stop()
-                    return
+                    pygame.quit()
+                    sys.exit()
         
 # Guia 5: JSON
 def game_over():
@@ -214,6 +214,7 @@ def game_over():
     while True:
         j.tela_game_over()
         capturar_evento_e_reiniciar_jogo()
+        return
 
 def game_vitoria():
     """Gerencia a persistência automática do ranking no JSON e pontuação de vitória."""
@@ -226,12 +227,15 @@ def game_vitoria():
     while True:
         j.tela_vitoria()
         capturar_evento_e_reiniciar_jogo()
+        return
 
 def main_loop():
     """Loop central de execução de jogabilidade."""
     inicio_tempo = time.time()    # Marca a estampa de tempo real de início de combate
     tempo_pausado_total = 0       # Zera o acumulador de congelamento de telas
     clock = pygame.time.Clock()
+    
+    limpar_tela()
 
     while True:
         # Melhoria - Controle de pausa: Se o jogo for pausado, captura e desconta os segundos ociosos
@@ -249,6 +253,8 @@ def main_loop():
             if e.type == pygame.KEYDOWN:
                 if e.key == pygame.K_m:
                     c.alternar_pausar_musica()
+                if e.key == pygame.K_p or e.key == pygame.K_ESCAPE:
+                    c.estado["pause"] = True
                 # Explicação: ESPAÇO cria um novo feixe de laser logo acima do topo da nave do Guardião
                 if e.key == pygame.K_SPACE:
                     c.tiros.append(pygame.Rect(c.player.centerx - 5, c.player.top - 10, 10, 20))
@@ -288,7 +294,7 @@ def main_loop():
 
         # Se o Boss final não estiver ativo, continua descendo os stormtropers do Império
         if not c.estado["vader_ativo"]:
-            mover_inimigos()
+            colisao_recuo_inimigos()
 
         # Mecanismo para taxa probabilística de disparo das naves inimigas (Tie Fighters)
         taxa_disparo = 0.01 if c.estado["nivel_dificuldade_ativa"] == 'facil' else (0.02 if c.estado["nivel_dificuldade_ativa"] == 'medio' else 0.04)
@@ -319,9 +325,6 @@ def main_loop():
                 if t.colliderect(inimigo['rect']):
                     if t in c.tiros: 
                         c.tiros.remove(t)
-        
-                    # Verifica colisão jogador-inimigo
-                    chk_colisao_player_inimigos()
                     
                     # Aloca a animação de explosão das naves inimigas por frame
                     c.explosoes_ativas.append({
@@ -336,6 +339,7 @@ def main_loop():
                         c.bactas.append(pygame.Rect(inimigo['rect'].x, inimigo['rect'].y, 32, 32))
                     if a.assets["sfx_explosao"]: 
                         a.assets["sfx_explosao"].play()
+                    break
 
         # INTERSECÇÃO GEOMÉTRICA: Tiros do Império atingindo a nave rebelde do Guardião
         for t in c.tiros_inimigos[:]:
@@ -345,6 +349,7 @@ def main_loop():
                 c.estado["vida"] -= 2 if t['vader'] else 1
                 if a.assets["sfx_dano"]: 
                     a.assets["sfx_dano"].play()
+                if c.estado["vida"] <= 0:
                     game_over()
                     return
 
@@ -364,7 +369,7 @@ def main_loop():
             # Incrementa deslocamento lateral contínuo do Boss
             c.vader.x += c.estado["vader_direcao"] * 4
             
-            # Rebatida nas bordas da tela: Inverte a direção e avança verticalmente esmagando a base
+            # Rebatida nas bordas della tela: Inverte a direção e avança verticalmente esmagando a base
             if c.vader.x <= 10 or c.vader.x + c.vader.width >= c.WIDTH - 10:
                 c.estado["vader_direcao"] *= -1
                 c.vader.y += 20  # Avanço progressivo vertical em zigue-zague
