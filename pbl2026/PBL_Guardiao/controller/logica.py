@@ -15,12 +15,10 @@ import modelo.ranking as rnk
 import view.menus as m
 import view.jogabilidade as j
 
-from modelo.configuracoes import chk_colisao_player_inimigos
-
 def colisao_recuo_inimigos():
     """Gerencia instinto de fuga aos inimigos.
     Explicação: Cada inimigo checa frame a frame a proximidade do player,
-    caso próximo, recua um pouco ao invés de descer."""
+    caso próximo, recua um pouco pro lado."""
     
     PX_RAIO_LIMITE = 120
     
@@ -50,8 +48,7 @@ def colisao_recuo_inimigos():
             if a.assets["sfx_dano"]: a.assets["sfx_dano"].play()
 
 def criar_onda(wave_idx):
-    """ Gera o posicionamento matricial linear dos inimigos.
-    Lógica inspirada no exercício do tabuleiro 'Big Joe' (Desafios matrizes) """
+    """ Lógica de posicionamento em matriz inspirada no exercício do tabuleiro 'Big Joe' (Desafios matrizes) """
     # Limpa a lista para garantir a remoção de restos de memória de ondas antigas
     c.inimigos.clear()
     
@@ -69,8 +66,8 @@ def criar_onda(wave_idx):
             # Instancia o dicionário da entidade com uma caixa de colisão física e vida interna
             c.inimigos.append({'rect': pygame.Rect(x, y, 40, 40), 'vida': 1})
             
-    # Velocidade progressiva: Acelera os inimigos a cada nova onda, mas nunca ultrapassar os limites
-    # permitidos para cada dificuldade (vide 'def controle_dificuldade()' em c.py)
+    # Velocidade progressiva: Acelera os inimigos a cada nova onda, mas nunca ultrapassar os limites...
+    # ...permitidos para cada dificuldade (vide 'def controle_dificuldade()' em c.py)
     if wave_idx > 0:
         config = c.config_dificuldade[c.estado["nivel_dificuldade_ativa"]]
         # Restringe a aceleração usando min() para respeitar o teto de dificuldade definida no menu
@@ -79,9 +76,6 @@ def criar_onda(wave_idx):
     c.estado["wave"] = wave_idx
 
 def mover_inimigos():
-    """Gerencia a descida gradual das naves imperiais e penalização de vida no HUD."""
-    # Correção: Uso da cópia rasa [:] impede travamento ou ValueError caso 
-    # um elemento seja excluído da lista original enquanto o loop 'for' a itera.
     for inimigo in c.inimigos[:]:
         # Incrementa o eixo Y com base na velocidade calculated da dificuldade
         inimigo['rect'].y += int(c.velocidade_inimigos)
@@ -89,13 +83,12 @@ def mover_inimigos():
         # Se ultrapassar o limite inferior da tela... --->
         if inimigo['rect'].top > c.HEIGHT:
             c.inimigos.remove(inimigo)
-            c.estado["vida"] -= 1
+            c.estado["vida"] -= 1    # <---- decrementa vida
             if a.assets["sfx_dano"]: 
                 a.assets["sfx_dano"].play()
 
 def gerenciar_pausa():
     """
-    Loop de congelamento lógico de quadros para a janela de pausa.
     Com congelamento completo de todos os atores e do cronômetro.
     """
     inicio_pausa = time.time()  # Registra o instante exato em que o jogo congelou
@@ -129,7 +122,6 @@ def iniciar_jogo():
     c.estado["vader_acertos"] = 0
     
     # Gerenciamento de dificuldade (vide modelo.configurações.py):
-    # Define a vida conforme a escolha do menu principal
     c.controle_dificuldade()
     c.velocidade_inimigos = c.config_dificuldade[c.estado["nivel_dificuldade_ativa"]]['inicial']
     
@@ -137,18 +129,16 @@ def iniciar_jogo():
     c.player.x = c.WIDTH // 2 - c.player.width // 2
     c.player.y = c.HEIGHT - 80
     
-def limpar_tela():
+def limpar_tela_e_gerar_onda():
     c.inimigos.clear()
     c.tiros.clear()
     c.tiros_inimigos.clear()
     c.bactas.clear()
     c.explosoes_ativas.clear()
     
-    # Fabrica a primeira leva de naves da partida
     criar_onda(c.estado["wave"])
 
 def exibir_mensagem_darth():
-    """Tela de transição pré-boss com limpeza de memória das telas anteriores"""
     while True:
         c.screen.fill(m.PRETO)
         msg = a.assets["fonte_titulo"].render("DARTH VADER SE APROXIMA!", True, m.VERMELHO)
@@ -165,20 +155,19 @@ def exibir_mensagem_darth():
                 if e.key == pygame.K_RETURN:
                     c.estado["mostrar_mensagem_darth"] = False
                     
-                    limpar_tela()
+                    limpar_tela_e_gerar_onda()
                     
                     c.estado["vader_ativo"] = True
                     return
                 
 def verificar_e_atualizar_ranking():
-    """Avalia se a pontuação se qualifica para o Hall da Fama no JSON e dispara o fluxo gráfico."""
     # Melhoria: elaborada função encapsulada pois foi aplicada em vários contextos.
     ranking = rnk.load_ranking()
-    # Verifica se a tabela tem menos de 10 recordes ou se o score atual supera o último colocado
+
     if len(ranking) < 10 or c.estado["score"] > ranking[-1]['pontuacao']:
-        nome_salvo = rnk.obter_nome_jogador()    # Abre sub-loop nativo para digitação alfanumérica
-        rnk.update_ranking(nome_salvo, c.estado["score"])  # Adiciona, ordena e salva o recorde no arquivo JSON
-        rnk.exibir_ranking()                     # Desenha visualmente a tabela do Top 10 atualizado
+        nome_salvo = rnk.obter_nome_jogador()   
+        rnk.update_ranking(nome_salvo, c.estado["score"])  #
+        rnk.exibir_ranking()                 
 
 def atualizar_projeteis(lista_tiros, velocidade_y, eh_laser_jogador=True):
     """Atualiza a posição dos tiros e remove da memória os que saem da tela.
@@ -205,16 +194,14 @@ def capturar_evento_e_reiniciar_jogo():
                     pygame.mixer.stop()          # Corta a música de Game Over
                     a.tocar_musica_tema()        # Recarrega a trilha sonora de partida
                     iniciar_jogo()               # Reseta os arrays da memória
-                    limpar_tela()
+                    limpar_tela_e_gerar_onda()
                     return
                 elif e.key == pygame.K_ESCAPE:
                     pygame.mixer.stop()
                     pygame.quit()
                     sys.exit()
-        
-# Guia 5: JSON
+
 def game_over():
-    """Gerencia a persistência automática do ranking no JSON e rotina de derrota."""
     pygame.mixer.music.stop()
     if a.assets["sfx_gameover"]: 
         a.assets["sfx_gameover"].play()
@@ -227,7 +214,6 @@ def game_over():
         return
 
 def game_vitoria():
-    """Gerencia a persistência automática do ranking no JSON e pontuação de vitória."""
     pygame.mixer.music.stop()
     if a.assets["sfx_vitoria"]: 
         a.assets["sfx_vitoria"].play()
@@ -245,7 +231,7 @@ def main_loop():
     tempo_pausado_total = 0       # Zera o acumulador de congelamento de telas
     clock = pygame.time.Clock()
     
-    limpar_tela()
+    limpar_tela_e_gerar_onda()
 
     while True:
         # Melhoria - Controle de pausa: Se o jogo for pausado, captura e desconta os segundos ociosos
@@ -283,6 +269,7 @@ def main_loop():
         if keys[pygame.K_RIGHT]: c.player.x += 5
         if keys[pygame.K_UP]: c.player.y -= 5
         if keys[pygame.K_DOWN]: c.player.y += 5
+        
         # Definição de limites de movimento do player para evitar sumir das bordas
         c.player.clamp_ip(pygame.Rect(0, 0, c.WIDTH, c.HEIGHT))
         
@@ -306,18 +293,18 @@ def main_loop():
         if not c.estado["vader_ativo"]:
             colisao_recuo_inimigos()
 
-        # Mecanismo para taxa probabilística de disparo das naves inimigas (Tie Fighters)
+        # Taxa probabilística de disparo das naves inimigas (Tie Fighters)
         taxa_disparo = 0.01 if c.estado["nivel_dificuldade_ativa"] == 'facil' else (0.02 if c.estado["nivel_dificuldade_ativa"] == 'medio' else 0.04)
         if random.random() < taxa_disparo and c.inimigos and not c.estado["vader_ativo"]:
             inimigo = random.choice(c.inimigos)
-            # Adiciona o laser roxo do lacaio à lista de vetores de perigo
+            # Adiciona o laser roxo
             c.tiros_inimigos.append({'rect': pygame.Rect(inimigo['rect'].centerx - 2, inimigo['rect'].bottom, 5, 10), 'vader': False})
 
-        # Processamento físico de descida e colisão de Bactas (cura Guardião)
+        # Descida e colisão de Bactas de cura
         for b in c.bactas[:]:
             b.y += 2
             if b.colliderect(c.player):
-                # Restringe a cura máxima com base na dificuldade para evitar trapaças 
+                # Restringe a cura máxima com base na dificuldade (válida somente para fácil) 
                 teto_vida = 3 if c.estado["nivel_dificuldade_ativa"] == 'facil' else 2
                 if c.estado["vida"] < teto_vida: 
                     c.estado["vida"] += 1 
@@ -329,7 +316,7 @@ def main_loop():
 
         atualizar_projeteis(c.tiros_inimigos, 5, eh_laser_jogador=False)
 
-        # Colisões de Tiros do Guardião contra Tie Fighters Comuns
+        # Colisões de Tiros do Guardião contra Tie Fighters
         for t in c.tiros[:]:
             for inimigo in c.inimigos[:]:
                 if t.colliderect(inimigo['rect']):
@@ -351,11 +338,10 @@ def main_loop():
                         a.assets["sfx_explosao"].play()
                     break
 
-        # INTERSECÇÃO GEOMÉTRICA: Tiros do Império atingindo a nave rebelde do Guardião
+        # Tiros inimigos atingindo a nave do Guardião
         for t in c.tiros_inimigos[:]:
             if t['rect'].colliderect(c.player):
                 c.tiros_inimigos.remove(t)
-                # Dano remove 2 vidas se for feixe Sith ou 1 se for tiro comum
                 c.estado["vida"] -= 2 if t['vader'] else 1
                 if a.assets["sfx_dano"]: 
                     a.assets["sfx_dano"].play()
@@ -363,7 +349,7 @@ def main_loop():
                     game_over()
                     return
 
-        # Critério para evento Boss - se bater 200 pontos.
+        # Critério para evento Boss
         # Melhoria: para as ondas normais e evoca a tela modal do Darth Vader
         if c.estado["score"] >= 200 and not c.estado["vader_ativo"] and not c.estado["vitoria_exibida"]:
             c.estado["mostrar_mensagem_darth"] = True
@@ -376,15 +362,15 @@ def main_loop():
         # Fundamenação: Baseado nas progressões de urgência por avanço físico de perímetro
         # de Tomohiro Nishikado (Space Invaders, 1978) e curvas de desafio de Jesse Schell (2008).
         if c.estado["vader_ativo"]:
-            # Incrementa deslocamento lateral contínuo do Boss
+            # Incrementa deslocamento lateral contínuo
             c.vader.x += c.estado["vader_direcao"] * 4
             
-            # Rebatida nas bordas della tela: Inverte a direção e avança verticalmente esmagando a base
+            # Rebatida nas bordas da tela
             if c.vader.x <= 10 or c.vader.x + c.vader.width >= c.WIDTH - 10:
                 c.estado["vader_direcao"] *= -1
                 c.vader.y += 20  # Avanço progressivo vertical em zigue-zague
                 
-            # Fail-state instantâneo se o Lorde Sith invadir o perímetro do jogador
+            # Game Over se o Lorde Sith invadir o perímetro do jogador
             if c.vader.bottom >= c.player.top: 
                 c.estado["vida"] = 0
                 game_over()
@@ -397,7 +383,6 @@ def main_loop():
                 c.tiros_inimigos.append({'rect': pygame.Rect(c.vader.centerx - 2, c.vader.bottom, 5, 10), 'vader': True, 'dx': -2})
                 c.tiros_inimigos.append({'rect': pygame.Rect(c.vader.centerx - 2, c.vader.bottom, 5, 10), 'vader': True, 'dx': 2})
 
-        # Processamento vetorial do deslocamento lateral oblíquo do leque triplo de lasers do Boss
         for t in c.tiros_inimigos:
             if 'dx' in t: 
                 t['rect'].x += t['dx']

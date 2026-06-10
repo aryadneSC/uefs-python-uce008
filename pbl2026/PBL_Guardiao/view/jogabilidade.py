@@ -6,9 +6,7 @@ import modelo.configuracoes as c
 import modelo.assets as assets
 import view.menus as m
 
-# Motivo de uso da função: Automatiza o cálculo matemático de alinhamento horizontal 
 def desenhar_texto_centralizado(superficie_texto, altura_y):
-    """Calcula o alinhamento horizontal perfeito e carimba o texto na tela."""
     posicao_x = c.WIDTH // 2 - superficie_texto.get_width() // 2
     c.screen.blit(superficie_texto, (posicao_x, altura_y))
 

@@ -1,4 +1,4 @@
-"""Configuracoes: Atua como o Banco de Dados e Gerenciador de Estados (Model).
+"""Atua como o Banco de Dados e Gerenciador de Estados (Model).
 Centraliza dimensões físicas, vetores de ondas, dicionários de dificuldades
 e o estado atual do gameplay.
 Centraliza estado e regras de negócios do jogo"""
@@ -66,9 +66,6 @@ bactas = []            # Itens de cura na tela
 explosoes_ativas = []  # Efeitos visuais de explosão acontecendo na tela
 
 def controle_dificuldade():
-    """
-    Ajusta a vida inicial do jogador com base na dificuldade contida no dicionário de estado.
-    """
     if estado["nivel_dificuldade_ativa"] == 'facil': 
         estado["vida"] = 3
     elif estado["nivel_dificuldade_ativa"] == 'medio': 
@@ -77,7 +74,6 @@ def controle_dificuldade():
         estado["vida"] = 3
         
 def chk_colisao_player_inimigos():
-    """Detecta colisão direta e retorna posicao do impacto"""
     for inimigo in inimigos[:]:
         if player.colliderect(inimigo['rect']):
             inimigos.remove(inimigo)
