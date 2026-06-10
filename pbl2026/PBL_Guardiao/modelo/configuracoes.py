@@ -1,0 +1,85 @@
+"""Configuracoes: Atua como o Banco de Dados e Gerenciador de Estados (Model).
+Centraliza dimensões físicas, vetores de ondas, dicionários de dificuldades
+e o estado atual do gameplay.
+Centraliza estado e regras de negócios do jogo"""
+
+import pygame
+
+WIDTH, HEIGHT = 800, 600
+
+# A moldura da tela começa vazia (None) porque é preenchida pelo main.py assim que a janela abre
+screen = None  
+
+# Dicionário para todas as variáveis mutáveis durante a partida, isso
+# torna o gerenciamento muito mais simples e centralizado.
+estado = {
+    "score": 0,
+    "vida": 3,
+    "nivel_dificuldade_ativa": "facil",
+    "wave": 0,
+    "vader_ativo": False,
+    "vader_acertos": 0,
+    "vader_direcao": 1,
+    "vitoria_exibida": False,
+    "pause": False,
+    "mostrar_mensagem_darth": False,
+    "musica_pausada" : False
+}
+
+msc_botao = pygame.Rect(WIDTH - 55, 15, 32, 32)
+
+"""Explicação: utilizei funções nativas do pygame (pause e unpause)"""
+def alternar_pausar_musica():
+    """Inverte o booleano e aplica o estado no mixer do pygame."""
+    estado["musica_pausada"] = not estado["musica_pausada"]
+    
+    if estado["musica_pausada"]:
+        pygame.mixer.music.pause()
+    else:
+        pygame.mixer.music.unpause()
+
+# Explicação:
+# Cada lista representa uma linha horizontal de spawn. O número 1 indica a presença física
+# de uma nave Tie Fighter ativa naquela coordenada, e 0 indica espaço vazio.
+ondas = [
+    [0, 1, 0, 1, 0, 1, 0, 1], # Onda 1: Inimigos intercalados
+    [1, 1, 1, 1, 1, 1, 1, 1], # Onda 2: Linha de frente imperial completa
+    [0, 1, 1, 0, 1, 1, 0, 1], # Onda 3: Flancos imperiais protegidos e centro aberto
+]
+
+# Define as velocidades iniciais, limites e acelerações para cada nível de dificuldade.
+config_dificuldade = {
+    'facil': {'inicial': 1.5, 'limite': 3.0, 'incremento': 0.2},
+    'medio': {'inicial': 2.5, 'limite': 5.0, 'incremento': 0.4},
+    'dificil': {'inicial': 3.5, 'limite': 8.0, 'incremento': 0.6}
+}
+velocidade_inimigos = 1.0 # Velocidade atual das naves na rodada, calculada pelo logica.py
+
+player = pygame.Rect(WIDTH // 2 - 20, HEIGHT - 80, 40, 40) # Posição inicial do jogador
+vader = pygame.Rect(WIDTH // 2 - 30, 50, 60, 60)           # Posição inicial do DV
+
+# Listas que armazenam os objetos gerados em tempo real durante a partida.
+tiros = []             # Lasers disparados pelo jogador
+inimigos = []          # Lista de Tie Fighters sobreviventes na tela
+tiros_inimigos = []    # Lasers disparados pelo Império ou pelo Boss
+bactas = []            # Itens de cura na tela
+explosoes_ativas = []  # Efeitos visuais de explosão acontecendo na tela
+
+def controle_dificuldade():
+    """
+    Ajusta a vida inicial do jogador com base na dificuldade contida no dicionário de estado.
+    """
+    if estado["nivel_dificuldade_ativa"] == 'facil': 
+        estado["vida"] = 3
+    elif estado["nivel_dificuldade_ativa"] == 'medio': 
+        estado["vida"] = 2
+    elif estado["nivel_dificuldade_ativa"] == 'dificil': 
+        estado["vida"] = 1
+        
+def chk_colisao_player_inimigos():
+    """Detecta colisão direta e retorna posicao do impacto"""
+    for inimigo in inimigos[:]:
+        if player.colliderect(inimigo['rect']):
+            inimigos.remove(inimigo)
+            return {'x': inimigo['rect'].x, 'y': inimigo['rect'].y}
+    return None
