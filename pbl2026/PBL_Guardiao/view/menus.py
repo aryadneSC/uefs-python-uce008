@@ -20,9 +20,8 @@ TURQUESA = (64, 204, 208)
 
 def tela_narrativa():
     """
-    Exibe a introdução do universo de Star Wars contextualizando a missão do Guardião.
-    Contorno de erro: Antigamente, essa tela ficava dentro da jogo.py gerando NameError
-    porque as fontes ainda não tinham sido inicializadas no motor gráfico. Agora ela roda em escopo isolado.
+    Correção de erro: Antigamente, essa tela ficava dentro da jogo.py gerando NameError
+    porque as fontes ainda não tinham sido inicializadas. Agora ela roda em escopo isolado.
     """
     while True:
         c.screen.fill(PRETO)
@@ -43,7 +42,7 @@ def tela_narrativa():
         instrucao = a.assets["fonte_titulo"].render("Pressione ENTER para iniciar", True, VERDE_MUSGO)
         c.screen.blit(instrucao, (c.WIDTH // 2 - instrucao.get_width() // 2, c.HEIGHT - 70))
         
-        # Loop de blitagem das linhas com incremento vertical de 40 pixels (Criação do bloco de texto formatado)
+        # Loop de blitagem das linhas com incremento vertical de 40 pixels p centralizar o texto narrativo
         for i, linha in enumerate(texto):
             txt = a.assets["fonte_titulo"].render(linha, True, BRANCO)
             c.screen.blit(txt, (c.WIDTH // 2 - txt.get_width() // 2, c.HEIGHT // 4 + i * 40))
@@ -60,14 +59,14 @@ def tela_narrativa():
                     return
 
 def mostrar_menu_pausa():
-    # IMPORTANTE: Essa função NÃO possui um loop 'while' interno próprio. 
-    # Ela é apenas um renderizador estático. O loop de travamento é controlado pela logica.py em Controller.
+    # IMPORTANTE LEMBRAR: Essa função NÃO possui um loop 'while' interno. 
+    # Porque ela é apenas um renderizador simples. O loop de travamento é controlado pela logica.py.
     c.screen.fill(PRETO)
     titulo = a.assets["fonte_titulo"].render("JOGO PAUSADO", True, AMARELO)
     continuar_txt = a.assets["fonte_hud"].render("Pressione P para Continuar", True, BRANCO)
     sair_txt = a.assets["fonte_hud"].render("Pressione ESC para Sair", True, VERMELHO_PASTEL)
     
-    # Blita e centraliza matematicamente as instruções na tela ativa do monitor
+    # Blita e centraliza tela
     c.screen.blit(titulo, (c.WIDTH // 2 - titulo.get_width() // 2, c.HEIGHT // 3))
     c.screen.blit(continuar_txt, (c.WIDTH // 2 - continuar_txt.get_width() // 2, c.HEIGHT // 2))
     c.screen.blit(sair_txt, (c.WIDTH // 2 - sair_txt.get_width() // 2, c.HEIGHT // 2 + 50))

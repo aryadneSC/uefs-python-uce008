@@ -13,9 +13,6 @@ def desenhar_texto_centralizado(superficie_texto, altura_y):
     c.screen.blit(superficie_texto, (posicao_x, altura_y))
 
 def desenhar_cenario(inicio_tempo, tempo_pausado_total):
-    """Pinta e atualiza recursivamente todos os elementos dinâmicos do campo de batalha.
-    Esta função roda a cada iteração do clock (60 FPS) redesenhando a tela do zero."""
-    # Renderização do background (Camada Inferior - Fundo do Tabuleiro):
     if assets.assets["img_fundo"]: 
         c.screen.blit(assets.assets["img_fundo"], (0, 0))
     else: 
@@ -30,8 +27,13 @@ def desenhar_cenario(inicio_tempo, tempo_pausado_total):
         frame_atual_player = (pygame.time.get_ticks() // 200) % 2
         c.screen.blit(assets.assets["img_player_frames"][frame_atual_player], c.player)
     else: 
-        # Fallback: desenha um retângulo verde primitivo se as sprites da pasta player sumirem
-        pygame.draw.rect(c.screen, m.VERDE, c.player)
+        # Fallback: calcula as três coordenadas com base no Rect para desenhar um triângulo dinâmico
+        ponto_topo = (c.player.centerx, c.player.top)
+        ponto_esq  = (c.player.left, c.player.bottom)
+        ponto_dir  = (c.player.right, c.player.bottom)
+        
+        # printa o triangulo verde
+        pygame.draw.polygon(c.screen, m.VERDE, [ponto_topo, ponto_esq, ponto_dir])
         
     # Renderização dos Tie Fighters
     if not c.estado["vader_ativo"]:
@@ -48,22 +50,19 @@ def desenhar_cenario(inicio_tempo, tempo_pausado_total):
             # Blita o sprite da cápsula médica na sua coordenada atual de descida
             c.screen.blit(assets.assets["img_bacta"], b)
         else: 
-            # Fallback: desenha quadrados primitivos
+            # Fallback: desenha quadrados
             pygame.draw.rect(c.screen, m.TURQUESA, b)
             
-    # Animação procedural da explosão:
+    # Animação da explosão:
     tempo_agora = pygame.time.get_ticks()
-    # Uso da [:] para iterar de forma segura enquanto são removidos elements da lista original
     for exp in c.explosoes_ativas[:]:
         if assets.assets["img_explosao_frames"]:
-            # Puxa o quadro atual mapeado no dicionário da explosão específica
             c.screen.blit(assets.assets["img_explosao_frames"][exp['frame']], (exp['x'], exp['y']))
-            # Troca de quadro a cada 60 milissegundos para garantir fluidez visual de estilhaços de energia
             if tempo_agora - exp['last_update'] > 60:
-                exp['frame'] += 1 # Avança para o próximo PNG da animação
-                exp['last_update'] = tempo_agora # Reseta o carimbo de última atualização do frame
+                exp['frame'] += 1 
+                exp['last_update'] = tempo_agora 
                 if exp['frame'] >= 5: 
-                    # Se estourar o limite de 5 quadros (0 a 4), deleta a explosão da memória (Coleta de lixo ativa)
+                    # Se estourar o limite de 5 quadros por seg, deleta a explosão da memória
                     c.explosoes_ativas.remove(exp)
         else: 
             # Se não houver sprites de explosão na pasta, limpa o array imediatamente para não travar o loop
@@ -101,17 +100,19 @@ def desenhar_cenario(inicio_tempo, tempo_pausado_total):
     # Exibição da pontuação, vida e cronômetro
     score_txt = assets.assets["fonte_hud"].render(f"Score: {c.estado['score']}", True, m.BRANCO)
     vida_txt = assets.assets["fonte_hud"].render(f"Vida: {c.estado['vida']}", True, m.BRANCO)
+    
     # Explicação '% 3600': Desconta os segundos em que o jogo permaneceu pausado
     tempo_atual = int(time.time() - inicio_tempo - tempo_pausado_total) % 3600 
+    
     # Formata a saída numérica em formato 00:00 (ex: 02:05) usando divisão inteira e resto
     tempo_txt = assets.assets["fonte_hud"].render(f"Tempo: {tempo_atual//60:02d}:{tempo_atual%60:02d}", True, m.BRANCO)
-    # Grid da interface estática
+    
+    # Grid da interface
     c.screen.blit(score_txt, (10, 10))  # Canto superior esquerdo (Margem de 10 pixels)
     c.screen.blit(vida_txt, (10, 50))   # Logo abaixo do score, com alinhamento vertical
     c.screen.blit(tempo_txt, (c.WIDTH - 250, 10)) # Alinhado à direita subtraindo a largura estimada do texto
 
 def tela_game_over():
-    """Desenha a tela modal preta estática de derrota imediata ao perder os escudos."""
     c.screen.fill(m.PRETO)
     msg = assets.assets["fonte_titulo"].render("GAME OVER", True, m.VERMELHO)
     instr = assets.assets["fonte_hud"].render("R para Reiniciar - ESC para Sair", True, m.BRANCO)
@@ -121,7 +122,6 @@ def tela_game_over():
     pygame.display.flip()
 
 def tela_vitoria():
-    """Desenha a tela modal preta estática de triunfo definitivo ao derrotar Darth Vader."""
     c.screen.fill(m.PRETO)
     msg = assets.assets["fonte_titulo"].render("VOCÊ VENCEU! A GALÁXIA ESTÁ SALVA!", True, m.VERDE)
     instr = assets.assets["fonte_hud"].render("Press R para Reiniciar ou ESC para voltar ao menu", True, m.BRANCO)
