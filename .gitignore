@@ -1,0 +1,17 @@
+# Configurações de IDEs (Eclipse / PyDev)
+.settings/
+.project
+.pydevproject
+
+# Configurações do VS Code
+.vscode/
+
+# Arquivos temporários do Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Ambiente Virtual (caso crie um local)
+venv/
+.venv/
