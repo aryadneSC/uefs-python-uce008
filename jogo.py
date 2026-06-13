@@ -17,11 +17,16 @@ import modelo.ranking as rnk
 import view.menus as m
 import controller.logica as l
 
-img_icone = carregar_img("player", "0.png")
-
-if img_icone:
+# Ícone do jogo
+try:
+    # Carrega direto da pasta de assets usando o caminho padrão do sistema
+    import os
+    caminho_icone = os.path.join("assets", "player", "0.png")
+    img_icone = pygame.image.load(caminho_icone)
     pygame.display.set_icon(img_icone)
-
+except Exception as e:
+    print(f"Não foi possível carregar o ícone: {e}")
+    
 c.screen = pygame.display.set_mode((c.WIDTH, c.HEIGHT))
 pygame.display.set_caption("O Despertar do Guardião")
 

@@ -1,4 +1,4 @@
-# Configurações de IDEs (Eclipse / PyDev)
+# Configurações de IDE
 .settings/
 .project
 .pydevproject
@@ -12,6 +12,23 @@ __pycache__/
 *.pyo
 *.pyd
 
-# Ambiente Virtual (caso crie um local)
+# Ambiente Virtual
 venv/
 .venv/
+
+# Arquivos gerados pelo PyInstaller
+build/
+dist/
+*.spec
+
+# Instaladores do Python que baixamos
+*.exe
+
+# Arquivos temporários do Python
+__pycache__/
+*.pyc
+
+# Configurações locais de IDE
+.settings/
+.project
+.pydevproject
