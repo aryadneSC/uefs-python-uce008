@@ -17,6 +17,11 @@ import modelo.ranking as rnk
 import view.menus as m
 import controller.logica as l
 
+img_icone = carregar_img("player", "0.png")
+
+if img_icone:
+    pygame.display.set_icon(img_icone)
+
 c.screen = pygame.display.set_mode((c.WIDTH, c.HEIGHT))
 pygame.display.set_caption("O Despertar do Guardião")
 
