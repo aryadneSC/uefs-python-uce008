@@ -101,12 +101,12 @@ def inicializar_assets():
     assets["fonte_hud"]    = caminho_fonte('fonts', 'Silkscreen-Regular.ttf', 20)
 
     # Efeitos sonoros
-    assets["sfx_laser"]    = carregar_som('audio/sfx', 'laser.wav')
-    assets["sfx_explosao"] = carregar_som('audio/sfx', 'explosao.wav')
-    assets["sfx_dano"]     = carregar_som('audio/sfx', 'dano.wav')
-    assets["sfx_bacta"]    = carregar_som('audio/sfx', 'bacta.wav')
-    assets["sfx_gameover"] = carregar_som('audio/sfx', 'gameover.wav')
-    assets["sfx_vitoria"]  = carregar_som('audio/sfx', 'vitoria.wav')
+    assets["sfx_laser"]    = carregar_som('audio/sfx', 'laser.ogg')
+    assets["sfx_explosao"] = carregar_som('audio/sfx', 'explosao.ogg')
+    assets["sfx_dano"]     = carregar_som('audio/sfx', 'dano.ogg')
+    assets["sfx_bacta"]    = carregar_som('audio/sfx', 'bacta.ogg')
+    assets["sfx_gameover"] = carregar_som('audio/sfx', 'gameover.ogg')
+    assets["sfx_vitoria"]  = carregar_som('audio/sfx', 'vitoria.ogg')
 
     # Volume homogêneo para todos os SFX
     volume = 0.2
@@ -118,7 +118,7 @@ def inicializar_assets():
     
 def tocar_musica_tema():
     """Gerencia a ativação em looping da trilha sonora principal."""
-    if carregar_som('audio', 'meteorstheme_v1.wav', is_music=True):
+    if carregar_som('audio', 'meteorstheme_v1.ogg', is_music=True):
         try:
             pygame.mixer.music.set_volume(0.4) # Calibra o volume em 40%
             pygame.mixer.music.play(-1)        # -1 executa a repetição infinita
