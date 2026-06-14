@@ -104,6 +104,7 @@ def desenhar_cenario(inicio_tempo, tempo_pausado_total):
     # Exibição da pontuação, vida e cronômetro
     score_txt = assets.assets["fonte_hud"].render(f"Score: {c.estado['score']}", True, m.BRANCO)
     vida_txt = assets.assets["fonte_hud"].render(f"Vida: {c.estado['vida']}", True, m.BRANCO)
+    c.screen.blit(vida_txt, (10, 50))
     
     # Explicação '% 3600': Desconta os segundos em que o jogo permaneceu pausado
     tempo_atual = int(time.time() - inicio_tempo - tempo_pausado_total) % 3600 
