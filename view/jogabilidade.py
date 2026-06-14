@@ -50,6 +50,12 @@ def desenhar_cenario(inicio_tempo, tempo_pausado_total):
         else: 
             # Fallback: desenha quadrados
             pygame.draw.rect(c.screen, m.TURQUESA, b)
+
+    for v in range(c.estado["vida"]):
+        if assets.assets["img_coracao"]:
+            c.screen.blit(assets.assets["img_coracao"], (110 + v * 35, 50))
+        else:
+            pygame.draw.rect(c.screen, (255, 182, 193), (110 + v * 35, 55, 20, 20))
             
     # Animação da explosão:
     tempo_agora = pygame.time.get_ticks()
