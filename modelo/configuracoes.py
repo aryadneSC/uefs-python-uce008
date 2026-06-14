@@ -15,6 +15,7 @@ screen = None
 estado = {
     "score": 0,
     "vida": 3,
+    "vida_maxima": 3,
     "nivel_dificuldade_ativa": "facil",
     "wave": 0,
     "vader_ativo": False,
