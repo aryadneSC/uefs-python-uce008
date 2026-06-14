@@ -38,13 +38,12 @@ def alternar_pausar_musica():
     else:
         pygame.mixer.music.unpause()
 
-# Explicação:
-# Cada lista representa uma linha horizontal de spawn. O número 1 indica a presença física
-# de uma nave Tie Fighter activa naquela coordenada, e 0 indica espaço vazio.
+# Explicação: Cada lista representa uma linha horizontal de spawn.
+# 1 = Tie Fighter e 2 = Espaço vazio ... Modificável!
 ondas = [
-    [0, 1, 0, 1, 0, 1, 0, 0], # Onda 1: Inimigos intercalados
-    [1, 0, 1, 1, 0, 1, 0, 1], # Onda 2: Linha de frente imperial completa
-    [0, 1, 1, 0, 1, 0, 1, 0], # Onda 3: Flancos imperiais protegidos e centro aberto
+    [0, 1, 0, 1, 0, 1, 0, 0],
+    [1, 0, 1, 0, 1, 0, 1, 0],
+    [1, 0, 0, 1, 0, 0, 1, 0],
 ]
 
 # Define as velocidades iniciais, limites e acelerações para cada nível de dificuldade.
@@ -53,17 +52,19 @@ config_dificuldade = {
     'medio': {'inicial': 2.5, 'limite': 4.5, 'incremento': 0.3},
     'dificil': {'inicial': 3.0, 'limite': 5.0, 'incremento': 0.4}
 }
+
 velocidade_inimigos = 1.0 # Velocidade atual das naves na rodada, calculada pelo logica.py
 
-player = pygame.Rect(WIDTH // 2 - 20, HEIGHT - 80, 40, 40) # Posição inicial do jogador
-vader = pygame.Rect(WIDTH // 2 - 30, 50, 60, 60)           # Posição inicial do DV
+# Posições iniciais
+player = pygame.Rect(WIDTH // 2 - 20, HEIGHT - 80, 40, 40)
+vader = pygame.Rect(WIDTH // 2 - 30, 50, 60, 60)
 
 # Listas que armazenam os objetos gerados em tempo real durante a partida.
-tiros = []             # Lasers disparados pelo jogador
-inimigos = []          # Lista de Tie Fighters sobreviventes na tela
-tiros_inimigos = []    # Lasers disparados pelo Império ou pelo Boss
-bactas = []            # Itens de cura na tela
-explosoes_ativas = []  # Efeitos visuais de explosão acontecendo na tela
+tiros = []
+inimigos = []
+tiros_inimigos = []
+bactas = []
+explosoes_ativas = []
 
 def controle_dificuldade():
     if estado["nivel_dificuldade_ativa"] == 'facil': 

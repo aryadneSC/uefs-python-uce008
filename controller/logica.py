@@ -302,7 +302,7 @@ def main_loop():
             colisao_recuo_inimigos()
 
         # Mecanismo para taxa probabilística de disparo das naves inimigas (Tie Fighters)
-        taxa_disparo = 0.01 if c.estado["nivel_dificuldade_ativa"] == 'facil' else (0.02 if c.estado["nivel_dificuldade_ativa"] == 'medio' else 0.04)
+        taxa_disparo = 0.008 if c.estado["nivel_dificuldade_ativa"] == 'facil' else (0.015 if c.estado["nivel_dificuldade_ativa"] == 'medio' else 0.023)
         if random.random() < taxa_disparo and c.inimigos and not c.estado["vader_ativo"]:
             inimigo = random.choice(c.inimigos)
             # Adiciona o laser roxo do lacaio à lista de vetores de perigo
@@ -314,9 +314,9 @@ def main_loop():
             # Infla a área do jogador para facilitar a coleta dos itens de cura (efeito magnético).
             if b.colliderect(c.player.inflate(8, 8)):
                 # Restringe a cura máxima com base na dificuldade para evitar trapaças 
-                teto_vida = 3 if c.estado["nivel_dificuldade_ativa"] == 'facil' else 2
-                if c.estado["vida"] < teto_vida: 
-                    c.estado["vida"] += 1 
+                teto_vida = 3
+                if c.estado["vida"] < teto_vida:
+                    c.estado["vida"] += 1
                 if a.assets["sfx_bacta"]: 
                     a.assets["sfx_bacta"].play()
                 c.bactas.remove(b)
