@@ -112,6 +112,8 @@ def gerenciar_pausa():
 
 def iniciar_jogo():
     """Tem a importante missão de limpar todas as listas da memória antes de inicializar a partida."""
+    pygame.mixer.stop()
+    
     c.estado["vitoria_exibida"] = False
     c.estado["mostrar_mensagem_darth"] = False
     c.estado["pause"] = False
