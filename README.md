@@ -73,7 +73,8 @@ O jogador controla um guardião da Força encarregado de proteger o planeta alia
 - [x] Escopo do protótipo (MVP)
 - [x] Protótipo funcional com Assets
 - [ ] Jogo completo com critérios do barema
-- [ ] Adições bacanas extra barema
+- [ ] 1. Adições bacanas extra barema:
+- [ ] 1.1 Pontuação ao derrotar Vader varia com a dificuldade
 
 ## Tecnologias
 - Eclipse IDE
