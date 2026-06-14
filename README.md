@@ -28,50 +28,51 @@ O jogador controla um guardião da Força encarregado de proteger o planeta alia
 ## Barema
 
 **Controle do Jogador**
-- [ ] Movimentação em todas as direções 0,5
-- [ ] Disparo de tiros energéticos 0,5
-- [ ] Coleta de elementos no campo de batalha (vida bônus) 0,5
+- [x] Movimentação em todas as direções
+- [x] Disparo de tiros energéticos
+- [x] Coleta de elementos no campo de batalha (vida bônus)
 
 **Sistema de Inimigos**
-- [ ] Inimigos descem gradualmente pelo ecrã 0,5
-- [ ] Inimigos disparam tiros que atingem o jogador 0,5
-- [ ] Aparecimento em ondas e pausa ao atingir 200 pts 0,5
+- [x] Inimigos descem gradualmente pelo ecrã
+- [x] Inimigos disparam tiros que atingem o jogador
+- [x] Aparecimento em ondas e pausa ao atingir 200 pts
 
 **Sistema de Colisão**
-- [ ] Tiros do jogador registram acerto no inimigo 0,5
-- [ ] Tiros/colisão reduzem vida do jogador (-1 ou -2 para Vader) 0,5
+- [x] Tiros do jogador registram acerto no inimigo
+- [x] Tiros/colisão reduzem vida do jogador (-1 ou -2 para Vader)
 
 **Darth Vader**
-- [ ] Darth Vader surge ao atingir determinada pontuação 0,25
-- [ ] Darth Vader requer 5 acertos para ser derrotado 0,25
-- [ ] Dano duplo ao jogador quando Darth Vader ataca 0,25
+- [x] Darth Vader surge ao atingir determinada pontuação
+- [x] Darth Vader requer 5 acertos para ser derrotado
+- [x] Dano duplo ao jogador quando Darth Vader ataca
 
 **Pontos de Vida**
-- [ ] Começa com 3 e vida bonus surge aleatoriamente ao derrotar inimigo 0,5
+- [x] Começa com 3 e vida bonus surge aleatoriamente ao derrotar inimigo
 
 **Sistema de Pontuação**
-- [ ] Stormtrooper vale 10 pts (1 tiro) 0,25
-- [ ] Derrotar Darth Vader vale 200 pts e vence o jogo 0,25
-- [ ] Game Over quando vida chega a 0 0,25
-- [ ] Vitória ao derrotar Darth Vader 0,25
+- [x] Stormtrooper vale 10 pts (1 tiro)
+- [ ] Derrotar Darth Vader vale 200 pts e vence o jogo
+- [x] Game Over quando vida chega a 0
+- [x] Vitória ao derrotar Darth Vader
 
 **HUD e Menus**
-- [ ] Exibe Score, Barra de Vida e Cronômetro (mm:ss) em tempo real 0,25
-- [ ] Menu Principal 0,25
-- Menu de Pausa 0,25
+- [x] Exibe Score, Barra de Vida e Cronômetro (mm:ss) em tempo real
+- [x] Menu Principal
+- [ ] Menu de Pausa
 
 **Nível de Dificuldade**
-- [ ] Implementação de dificuldade no jogo de acordo ao nivel 0,5
-- [ ] Velocidade dos inimigos aumenta conforme a dificuldade 0,5
+- [ ] Implementação de dificuldade no jogo de acordo ao nivel
+- [x] Velocidade dos inimigos aumenta conforme a dificuldade
 
 **Qualidade do Código**
-- [ ] Código bem modularizado em funções com responsabilidades claras 1
-- [ ] Boas práticas: nomes significativos, sem repetição excessiva (DRY) 0,5
-- [ ] Comentários e organização do código-fonte
+- [ ] Código bem modularizado em funções com responsabilidades claras
+- [ ] Boas práticas: nomes significativos, sem repetição excessiva (DRY)
+- [  ] Comentários e organização do código-fonte
 
 ## Metas de Atualização
 - [x] Escopo do protótipo (MVP)
 - [x] Protótipo funcional com Assets
+- [ ] Jogo completo com critérios do barema
 - [ ] Adições bacanas extra barema
 
 ## Tecnologias
