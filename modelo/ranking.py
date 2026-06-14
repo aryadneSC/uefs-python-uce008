@@ -16,7 +16,6 @@ def load_ranking():
         return []
     try:
         with open(RANKING_FILE, 'r', encoding='utf-8') as f:
-            # Deserializa o texto puro do JSON convertendo-o de volta em uma lista nativa de dicionários do Python
             return json.load(f).get("top_scores", [])
     except: 
         return []
@@ -92,7 +91,7 @@ def exibir_ranking():
         c.screen.blit(instrucao, (WIDTH // 2 - instrucao.get_width() // 2, HEIGHT - 70))
         pygame.display.flip()
         
-        # Escuta de eventos para fechar a janela ou retornar com segurança desempilhando a função
+        # Escuta de eventos para fechar a janela ou retornar com segurança, desempilhando a função
         for e in pygame.event.get():
             if e.type == pygame.QUIT:
                 pygame.quit()

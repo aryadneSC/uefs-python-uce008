@@ -59,7 +59,7 @@ def tela_narrativa():
                     return
 
 def mostrar_menu_pausa():
-    # IMPORTANTE LEMBRAR: Essa função NÃO possui um loop 'while' interno. 
+    # IMPORTANTE FRISAR: Essa função NÃO possui um loop 'while' interno. 
     # Porque ela é apenas um renderizador simples. O loop de travamento é controlado pela logica.py.
     c.screen.fill(PRETO)
     titulo = a.assets["fonte_titulo"].render("JOGO PAUSADO", True, AMARELO)

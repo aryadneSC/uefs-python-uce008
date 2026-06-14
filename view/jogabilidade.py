@@ -14,7 +14,6 @@ def desenhar_cenario(inicio_tempo, tempo_pausado_total):
     if assets.assets["img_fundo"]: 
         c.screen.blit(assets.assets["img_fundo"], (0, 0))
     else: 
-        # Fallback caso a imagem space-2 falhe, limpa a tela pintando preto absoluto
         c.screen.fill(m.PRETO)
         
     # Renderização do Caça (player)
@@ -25,7 +24,7 @@ def desenhar_cenario(inicio_tempo, tempo_pausado_total):
         frame_atual_player = (pygame.time.get_ticks() // 200) % 2
         c.screen.blit(assets.assets["img_player_frames"][frame_atual_player], c.player)
     else: 
-        # Fallback: calcula as três coordenadas com base no Rect para desenhar um triângulo dinâmico
+        # Fallback: calcula as três coordenadas com base no Rect para desenhar um triângulo
         ponto_topo = (c.player.centerx, c.player.top)
         ponto_esq  = (c.player.left, c.player.bottom)
         ponto_dir  = (c.player.right, c.player.bottom)
@@ -39,7 +38,7 @@ def desenhar_cenario(inicio_tempo, tempo_pausado_total):
             if assets.assets["img_inimigo"]: 
                 c.screen.blit(assets.assets["img_inimigo"], inimigo['rect'])
             else: 
-                # Fallback: desenha retângulos vermelhos primitivos
+                # Fallback: retângulos
                 pygame.draw.rect(c.screen, m.VERMELHO, inimigo['rect'])
                 
     # Renderização das bactas
@@ -48,7 +47,7 @@ def desenhar_cenario(inicio_tempo, tempo_pausado_total):
             # Blita o sprite da cápsula médica na sua coordenada atual de descida
             c.screen.blit(assets.assets["img_bacta"], b)
         else: 
-            # Fallback: desenha quadrados
+            # Fallback: retângulos
             pygame.draw.rect(c.screen, m.TURQUESA, b)
 
     for v in range(c.estado["vida"]):
@@ -75,7 +74,6 @@ def desenhar_cenario(inicio_tempo, tempo_pausado_total):
     # Botão de pausar e despausar musica
     img_msc = assets.assets.get("img_icone_msc", None)
     if img_msc:
-        # Se as imagens carregaram, blita o ícone correspondente (0 para ativo, 1 para mutado)
         indice_imagem = 1 if c.estado["musica_pausada"] else 0
         c.screen.blit(img_msc[indice_imagem], c.msc_botao)
     else:
@@ -98,7 +96,7 @@ def desenhar_cenario(inicio_tempo, tempo_pausado_total):
         if assets.assets["img_vader"]: 
             c.screen.blit(assets.assets["img_vader"], c.vader)
         else: 
-            # Fallback: desenha um bloco vermelho escuro de tamanho 60x60 pixels
+            # Fallback: quadrado 60x60 px
             pygame.draw.rect(c.screen, (150, 0, 0), c.vader)
 
     # Exibição da pontuação, vida e cronômetro
@@ -115,7 +113,7 @@ def desenhar_cenario(inicio_tempo, tempo_pausado_total):
     # Grid da interface
     c.screen.blit(score_txt, (10, 10))  # Canto superior esquerdo (Margem de 10 pixels)
     c.screen.blit(vida_txt, (10, 50))   # Logo abaixo do score, com alinhamento vertical
-    c.screen.blit(tempo_txt, (c.WIDTH - 250, 10)) # Alinhado à direita subtraindo a largura estimada do texto
+    c.screen.blit(tempo_txt, (c.WIDTH - 250, 10)) # Alinhado à direita subtraindo a largura do texto
 
 def tela_game_over():
     c.screen.fill(m.PRETO)

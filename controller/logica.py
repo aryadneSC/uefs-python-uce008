@@ -68,8 +68,7 @@ def criar_onda(wave_idx):
             c.inimigos.append({'rect': pygame.Rect(x, y, 40, 40), 'vida': 1})
             
     # Velocidade progressiva: Acelera os inimigos a cada nova onda,
-    # mas nunca ultrapassar os limites permitidos para cada dificuldade 
-    # (vide 'def controle_dificuldade()' in c.py)
+    # mas nunca ultrapassar os limites para cada dificuldade 
     if wave_idx > 0:
         config = c.config_dificuldade[c.estado["nivel_dificuldade_ativa"]]
 
@@ -103,7 +102,6 @@ def gerenciar_pausa():
                 pygame.quit()
                 sys.exit()
             if e.type == pygame.KEYDOWN:
-                # Pressionar 'P' ou 'ESC' retoma a execução normal desativando a flag
                 if e.key == pygame.K_p or e.key == pygame.K_ESCAPE:
                     c.estado["pause"] = False
                     
@@ -143,7 +141,6 @@ def limpar_tela():
     c.coracoes.clear()
     c.explosoes_ativas.clear()
     
-    # Fabrica a primeira leva de naves da partida
     criar_onda(c.estado["wave"])
 
 def exibir_mensagem_darth():
@@ -171,7 +168,7 @@ def exibir_mensagem_darth():
 def verificar_e_atualizar_ranking():
     # Melhoria: elaborada função encapsulada pois foi aplicada em vários contextos.
     ranking = rnk.load_ranking()
-    # Verifica se a tabela tem menos de 10 recordes ou se o score atual supera o último colocado
+
     if len(ranking) < 10 or c.estado["score"] > ranking[-1]['pontuacao']:
         nome_salvo = rnk.obter_nome_jogador()
         rnk.update_ranking(nome_salvo, c.estado["score"])
@@ -199,9 +196,9 @@ def capturar_evento_e_reiniciar_jogo():
                 sys.exit()
             if e.type == pygame.KEYDOWN:
                 if e.key == pygame.K_r:
-                    pygame.mixer.stop()          # Corta a música de Game Over
-                    a.tocar_musica_tema()        # Recarrega a trilha sonora de partida
-                    iniciar_jogo()               # Reseta os arrays da memória
+                    pygame.mixer.stop()   # Corta a música de Game Over
+                    a.tocar_musica_tema() # Recarrega a trilha sonora de partida
+                    iniciar_jogo()        # Reseta os arrays da memória
                     limpar_tela()
                     return
                 elif e.key == pygame.K_ESCAPE:
@@ -270,16 +267,17 @@ def main_loop():
             # Capturar clique no botão de musica
             if e.type == pygame.MOUSEBUTTONDOWN:
                 if e.button == 1: # Clique com o botão esquerdo do mouse
-                    # Verifica se a coordenada do clique (e.pos) está dentro do nosso Rect
+                    # Verifica se a coordenada do clique (e.pos) está dentro do Rect
                     if c.msc_botao.collidepoint(e.pos):
-                        c.alternar_pausar_musica() # Altera o booleano e aplica pause/unpause
+                        c.alternar_pausar_musica()
                         
-        # Varredura de teclas pressionadas para movimentação omnidirecional
+        # Input polling para movimento contínuo do jogador
         keys = pygame.key.get_pressed()
         if keys[pygame.K_LEFT]: c.player.x -= 5
         if keys[pygame.K_RIGHT]: c.player.x += 5
         if keys[pygame.K_UP]: c.player.y -= 5
         if keys[pygame.K_DOWN]: c.player.y += 5
+
         # Definição de limites de movimento do player para evitar sumir das bordas
         c.player.clamp_ip(pygame.Rect(0, 0, c.WIDTH, c.HEIGHT))
         
@@ -310,7 +308,7 @@ def main_loop():
             # Adiciona o laser roxo do lacaio à lista de vetores de perigo
             c.tiros_inimigos.append({'rect': pygame.Rect(inimigo['rect'].centerx - 2, inimigo['rect'].bottom, 5, 10), 'vader': False})
 
-        # Bactas
+        # Colisão das Bactas
         for b in c.bactas[:]:
             b.y += 2
 
@@ -341,15 +339,15 @@ def main_loop():
 
         atualizar_projeteis(c.tiros_inimigos, 5, eh_laser_jogador=False)
 
-        # Colisões de Tiros do Guardião contra Tie Fighters Comuns
+        # Colisões de Tiros do Guardião contra Tie Fighters
         for t in c.tiros[:]:
             for inimigo in c.inimigos[:]:
-                # Infla um pouco os inimigos para os tiros do jogador acertarem mais fácil se passarem raspando.
+                # hitbox dos inimigos
                 if t.colliderect(inimigo['rect'].inflate(6, 6)):
                     if t in c.tiros: 
                         c.tiros.remove(t)
                     
-                    # Aloca a animação de explosão das naves inimigas por frame
+                    # Animação das naves inimigas
                     c.explosoes_ativas.append({
                         'x': inimigo['rect'].x, 'y': inimigo['rect'].y, 
                         'frame': 0, 'last_update': pygame.time.get_ticks()
@@ -371,12 +369,10 @@ def main_loop():
                         a.assets["sfx_explosao"].play()
                     break
 
-        # INTERSECÇÃO GEOMÉTRICA: Tiros do Império atingindo a nave rebelde do Guardião
+        # Tiros inimigos colidindo com o jogador
         for t in c.tiros_inimigos[:]:
-            # Encolhe a hitbox do jogador para os lasers inimigos não acertarem as pontas invisíveis das asas.
             if t['rect'].colliderect(c.player.inflate(-16, -12)):
                 c.tiros_inimigos.remove(t)
-                # Dano remove 2 vidas se for feixe Sith ou 1 se for tiro comum
                 c.estado["vida"] -= 2 if t['vader'] else 1
                 if a.assets["sfx_dano"]: 
                     a.assets["sfx_dano"].play()
@@ -384,8 +380,7 @@ def main_loop():
                     game_over()
                     return
 
-        # Critério para evento Boss - se bater 200 pontos.
-        # Melhoria: para as ondas normais e evoca a tela modal do Darth Vader
+        # Critério para evento Boss
         if c.estado["score"] >= 200 and not c.estado["vader_ativo"] and not c.estado["vitoria_exibida"]:
             c.estado["mostrar_mensagem_darth"] = True
 
@@ -403,20 +398,19 @@ def main_loop():
                 c.estado["vader_direcao"] *= -1
                 c.vader.y += 20  # Avanço progressivo vertical em zigue-zague
                 
-            # Fail-state instantâneo se o Lorde Sith invadir o perímetro do jogador
+            # Game over instantâneo se o boss ultrapassar o perímetro do Caça
             if c.vader.bottom >= c.player.top: 
                 c.estado["vida"] = 0
                 game_over()
                 return
 
-            # Disparo triplo em leque geométrico inspirado em Jesse Schell Challenge Lens
+            # Disparo triplo em leque inspirado em Jesse Schell Challenge Lens
             if random.random() < 0.04:
-                # Aloca três projéteis no mesmo local, mas observando deslocamentos laterais distintos (dx)
+                # Efeito leque: Aloca três projéteis no mesmo local, mas com deslocamentos laterais distintos (dx)
                 c.tiros_inimigos.append({'rect': pygame.Rect(c.vader.centerx - 2, c.vader.bottom, 5, 10), 'vader': True, 'dx': 0})
                 c.tiros_inimigos.append({'rect': pygame.Rect(c.vader.centerx - 2, c.vader.bottom, 5, 10), 'vader': True, 'dx': -2})
                 c.tiros_inimigos.append({'rect': pygame.Rect(c.vader.centerx - 2, c.vader.bottom, 5, 10), 'vader': True, 'dx': 2})
 
-        # Processamento vetorial do deslocamento lateral oblíquo do leque triplo de lasers do Boss
         for t in c.tiros_inimigos:
             if 'dx' in t: 
                 t['rect'].x += t['dx']
@@ -424,12 +418,12 @@ def main_loop():
         # Verifica tiros do Guardião atingindo o Darth Vader
         if c.estado["vader_ativo"] and not c.estado["vitoria_exibida"]:
             for t in c.tiros[:]:
-                # Aumenta ligeiramente a hitbox do Boss final para ficar mais satisfatório acertar tiros nele.
+                # Hitbox do DV
                 if t.colliderect(c.vader.inflate(6, 6)):
                     c.tiros.remove(t)
-                    c.estado["vader_acertos"] += 1  # Incrementa o medidor de impactos no Boss
+                    c.estado["vader_acertos"] += 1 
                     
-                    # Melhoria: Gera faíscas e pequenas explosões posicionais no Vader
+                    # Gera faíscas no DV para impacto visual
                     c.explosoes_ativas.append({
                         'x': c.vader.x + random.randint(0, 20), 'y': c.vader.y + random.randint(0, 20), 
                         'frame': 0, 'last_update': pygame.time.get_ticks()

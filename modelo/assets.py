@@ -87,7 +87,7 @@ def inicializar_assets():
     assets["img_player_frames"] = [f for f in [p0, p1] if f]
 
     # Animação de explosão dos Tie Fighters (5 frames numerados de 0 a 4)
-    assets["img_explosao_frames"] = []  # garante lista limpa a cada inicialização
+    assets["img_explosao_frames"] = []
     for i in range(5):
         frame = caminho_img('explosion', f'{i}.png', (45, 45))
         if frame:
@@ -120,8 +120,8 @@ def inicializar_assets():
     
 def tocar_musica_tema():
     """Gerencia a ativação em looping da trilha sonora principal."""
-    if carregar_som('audio', 'meteorstheme_v1.ogg', is_music=True):
+    if carregar_som('audio', 'meteorstheme_v1.ogg', is_music = True):
         try:
-            pygame.mixer.music.set_volume(0.4) # Calibra o volume em 40%
-            pygame.mixer.music.play(-1)        # -1 executa a repetição infinita
+            pygame.mixer.music.set_volume(0.4)
+            pygame.mixer.music.play(-1)
         except: pass

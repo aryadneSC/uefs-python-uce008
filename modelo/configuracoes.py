@@ -10,8 +10,7 @@ WIDTH, HEIGHT = 800, 600
 # A moldura da tela começa vazia (None) porque é preenchida pelo main.py assim que a janela abre
 screen = None  
 
-# Dicionário para todas as variáveis mutáveis durante a partida, isso
-# torna o gerenciamento muito mais simples e centralizado.
+# Dicionário para todas as variáveis mutáveis durante a partida
 estado = {
     "score": 0,
     "vida": 3,
@@ -40,27 +39,27 @@ def alternar_pausar_musica():
         pygame.mixer.music.unpause()
 
 # Explicação: Cada lista representa uma linha horizontal de spawn.
-# 1 = Tie Fighter e 2 = Espaço vazio ... Modificável!
+# 1 = Tie Fighter e 2 = Espaço vazio 
+# Facilmente modificável :D
 ondas = [
     [0, 1, 0, 1, 0, 1, 0, 0],
-    [1, 0, 1, 0, 1, 0, 1, 0],
+    [0, 0, 1, 0, 1, 0, 0, 1],
     [1, 0, 0, 1, 0, 0, 1, 0],
 ]
 
-# Define as velocidades iniciais, limites e acelerações para cada nível de dificuldade.
 config_dificuldade = {
     'facil': {'inicial': 1.5, 'limite': 3.0, 'incremento': 0.2},
     'medio': {'inicial': 2.5, 'limite': 4.5, 'incremento': 0.3},
     'dificil': {'inicial': 3.0, 'limite': 5.0, 'incremento': 0.4}
 }
 
-velocidade_inimigos = 1.0 # Velocidade atual das naves na rodada, calculada pelo logica.py
+velocidade_inimigos = 1.0 # Velocidade atual. É calculada pelo logica.py
 
 # Posições iniciais
 player = pygame.Rect(WIDTH // 2 - 20, HEIGHT - 80, 40, 40)
 vader = pygame.Rect(WIDTH // 2 - 30, 50, 60, 60)
 
-# Listas que armazenam os objetos gerados em tempo real durante a partida.
+# Objetos gerados em tempo real durante a partida.
 tiros = []
 inimigos = []
 tiros_inimigos = []
