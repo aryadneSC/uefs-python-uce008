@@ -51,14 +51,14 @@ O jogador controla um guardião da Força encarregado de proteger o planeta alia
 
 **Sistema de Pontuação**
 - [x] Stormtrooper vale 10 pts (1 tiro)
-- [ ] Derrotar Darth Vader vale 200 pts e vence o jogo
+- [x] Derrotar Darth Vader vale 200 pts e vence o jogo
 - [x] Game Over quando vida chega a 0
 - [x] Vitória ao derrotar Darth Vader
 
 **HUD e Menus**
 - [x] Exibe Score, Barra de Vida e Cronômetro (mm:ss) em tempo real
 - [x] Menu Principal
-- [ ] Menu de Pausa
+- [x] Menu de Pausa
 
 **Nível de Dificuldade**
 - [ ] Implementação de dificuldade no jogo de acordo ao nivel
@@ -67,7 +67,7 @@ O jogador controla um guardião da Força encarregado de proteger o planeta alia
 **Qualidade do Código**
 - [ ] Código bem modularizado em funções com responsabilidades claras
 - [ ] Boas práticas: nomes significativos, sem repetição excessiva (DRY)
-- [  ] Comentários e organização do código-fonte
+- [ ] Comentários e organização do código-fonte
 
 ## Metas de Atualização
 - [x] Escopo do protótipo (MVP)
