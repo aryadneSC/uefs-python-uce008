@@ -283,8 +283,7 @@ def main_loop():
         # Definição de limites de movimento do player para evitar sumir das bordas
         c.player.clamp_ip(pygame.Rect(0, 0, c.WIDTH, c.HEIGHT))
         
-        if not c.estado["vader_ativo"]: # Verifica colisao  direta guardião-inimigo
-            # Reduz a hitbox do jogador para a colisão contra os inimigos comuns ficar menos agressiva nas pontas das asas.
+        if not c.estado["vader_ativo"]: # Verifica colisao direta guardião-inimigo
             for inimigo in c.inimigos[:]:
                 if c.player.inflate(-16, -12).colliderect(inimigo['rect']):
                     c.inimigos.remove(inimigo)
@@ -300,35 +299,34 @@ def main_loop():
         
         atualizar_projeteis(c.tiros, -16, eh_laser_jogador=True)
 
-        # Se o Boss final não estiver ativo, continua descendo os stormtropers do Império
+        # Se o Boss final não estiver ativo, continua descendo os stormtropers
         if not c.estado["vader_ativo"]:
             colisao_recuo_inimigos()
 
-        # Mecanismo para taxa probabilística de disparo das naves inimigas (Tie Fighters)
+        # Taxa probabilística de tiros dos inimigos
         taxa_disparo = 0.008 if c.estado["nivel_dificuldade_ativa"] == 'facil' else (0.015 if c.estado["nivel_dificuldade_ativa"] == 'medio' else 0.023)
         if random.random() < taxa_disparo and c.inimigos and not c.estado["vader_ativo"]:
             inimigo = random.choice(c.inimigos)
             # Adiciona o laser roxo do lacaio à lista de vetores de perigo
             c.tiros_inimigos.append({'rect': pygame.Rect(inimigo['rect'].centerx - 2, inimigo['rect'].bottom, 5, 10), 'vader': False})
 
-        # Processamento físico de descida e colisão de Bactas (cura Guardião)
+        # Bactas
         for b in c.bactas[:]:
             b.y += 2
-            # Infla a área do jogador para facilitar a coleta dos itens de cura (efeito magnético).
+
+            # Efeito magnético na área do jogador para facilitar a coleta das bactas.
             if b.colliderect(c.player.inflate(8, 8)):
-                if c.estado["vida"] < c.estado["vida_maxima"]:
-                    c.estado["vida"] += 1
-                # Restringe a cura máxima com base na dificuldade para evitar trapaças 
                 teto_vida = 3
-                if c.estado["vida"] < teto_vida:
+                if c.estado["vida"] < c.estado["vida_maxima"] and c.estado["vida"] < teto_vida:
                     c.estado["vida"] += 1
                 if a.assets["sfx_bacta"]: 
                     a.assets["sfx_bacta"].play()
                 c.bactas.remove(b)
+    
             elif b.top > c.HEIGHT: 
                 c.bactas.remove(b)
 
-        # 2. Movimentação e Colisão do Coração (Vida Bônus)
+        # Colisão Coração (Vida bônus)
         for coracao in c.coracoes[:]:
             coracao.y += 2
             if coracao.colliderect(c.player.inflate(8, 8)):
