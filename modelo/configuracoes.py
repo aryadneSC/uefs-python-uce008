@@ -68,6 +68,7 @@ bactas = []
 explosoes_ativas = []
 
 def controle_dificuldade():
+    c.estado["vida_maxima"] = 3
     if estado["nivel_dificuldade_ativa"] == 'facil': 
         estado["vida"] = 3
     elif estado["nivel_dificuldade_ativa"] == 'medio': 
