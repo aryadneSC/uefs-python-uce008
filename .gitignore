@@ -27,6 +27,7 @@ dist/
 # Arquivos temporários do Python
 __pycache__/
 *.pyc
+*.git
 
 # Configurações locais de IDE
 .settings/
