@@ -140,6 +140,7 @@ def limpar_tela():
     c.tiros.clear()
     c.tiros_inimigos.clear()
     c.bactas.clear()
+    c.coracoes.clear()
     c.explosoes_ativas.clear()
     
     # Fabrica a primeira leva de naves da partida
@@ -315,6 +316,8 @@ def main_loop():
             b.y += 2
             # Infla a área do jogador para facilitar a coleta dos itens de cura (efeito magnético).
             if b.colliderect(c.player.inflate(8, 8)):
+                if c.estado["vida"] < c.estado["vida_maxima"]:
+                    c.estado["vida"] += 1
                 # Restringe a cura máxima com base na dificuldade para evitar trapaças 
                 teto_vida = 3
                 if c.estado["vida"] < teto_vida:
@@ -324,6 +327,19 @@ def main_loop():
                 c.bactas.remove(b)
             elif b.top > c.HEIGHT: 
                 c.bactas.remove(b)
+
+        # 2. Movimentação e Colisão do Coração (Vida Bônus)
+        for coracao in c.coracoes[:]:
+            coracao.y += 2
+            if coracao.colliderect(c.player.inflate(8, 8)):
+                c.estado["vida_maxima"] = 4
+                if c.estado["vida"] < c.estado["vida_maxima"]:
+                    c.estado["vida"] += 1
+                if a.assets["sfx_bacta"]:
+                    a.assets["sfx_bacta"].play()
+                c.coracoes.remove(coracao)
+            elif coracao.top > c.HEIGHT:
+                c.coracoes.remove(coracao)
 
         atualizar_projeteis(c.tiros_inimigos, 5, eh_laser_jogador=False)
 
@@ -343,8 +359,15 @@ def main_loop():
                     
                     c.inimigos.remove(inimigo)
                     c.estado["score"] += 10  # Stormtrooper/Tie Fighter computa 10 pontos de score
-                    
-                    if random.random() < 0.2: # Sorteio de drops de cápsula de Bacta (20% de chance)
+
+                    sorteio_vida = random.random()
+                    if sorteio_vida < 0.05:
+                        c.coracoes.append(pygame.Rect(inimigo['rect'].x, inimigo['rect'].y, 32, 32))
+                    elif sorteio_vida < 0.25:
+                        c.bactas.append(pygame.Rect(inimigo['rect'].x, inimigo['rect'].y, 32, 32))
+
+                    sorteio_bacta = random.random()
+                    if sorteio_bacta < 0.2:
                         c.bactas.append(pygame.Rect(inimigo['rect'].x, inimigo['rect'].y, 32, 32))
                     if a.assets["sfx_explosao"]: 
                         a.assets["sfx_explosao"].play()
