@@ -57,6 +57,7 @@ assets = {
     "img_icone_msc": None,
     "img_player_frames": [],
     "img_explosao_frames": [],
+    "img_coracao": None,
     "fonte_titulo": None,
     "fonte_hud": None,
     "sfx_laser": None,
@@ -76,6 +77,7 @@ def inicializar_assets():
 
     assets["img_fundo"] = caminho_img('space', 'space-2.png', (WIDTH, HEIGHT))
     assets["img_bacta"] = caminho_img('space', 'bacta.png', (32, 32))
+    assets["img_coracao"] = caminho_img('space', 'coracao.png', (32, 32))
     assets["img_vader"] = caminho_img('space', 'vader.png', (60, 60))
     assets["img_inimigo"] = caminho_img('space', 'tie fighter.png',(40, 40))
 
