@@ -1,4 +1,8 @@
 @echo off
-echo Inicializando jogo...
-.\python_win\python.exe jogo.py
+echo Instalando dependências do jogo...
+python -m install --user pygame-ce
+
+echo.
+echo   Iniciando o Jogo...
+python jogo.py
 pause
