@@ -52,8 +52,8 @@ ondas = [
 
 config_dificuldade = {
 'facil':{'inicial':1.5,'limite':3.0,'incremento':0.2,'pontos_vader':200 },
-'medio':{'inicial':2.5,'limite':4.5,'incremento':0.3,'pontos_vader':300 },
-'dificil':{'inicial':3.0,'limite':5.0,'incremento':0.4,'pontos_vader':400 }
+'medio':{'inicial':2.0,'limite':3.5,'incremento':0.3,'pontos_vader':300 },
+'dificil':{'inicial':3.0,'limite':4.0,'incremento':0.4,'pontos_vader':400 }
 }
 
 
