@@ -16,7 +16,6 @@ c.screen = pygame.display.set_mode((c.WIDTH, c.HEIGHT))
 pygame.display.set_caption("O Despertar do Guardião")
 screen = c.screen
 
-
 try:
     caminho_icone = os.path.join("assets", "player", "0.png")
     img_icone = pygame.image.load(caminho_icone)
@@ -25,14 +24,14 @@ except Exception as e:
     print(f"Não foi possível carregar o ícone: {e}")
 
 a.inicializar_assets()
-a.tocar_musica_tema()
 
 
 def menu_principal():
-    while True:
-        if not pygame.mixer.music.get_busy() and not c.estado["musica_pausada"]:
-            a.tocar_musica_tema()
+    a.tocar_musica_menu()
+    clock = pygame.time.Clock()
 
+    while True:
+        clock.tick(30)
         t.tela_menu_principal()
         h.desenhar_botao_pausar_msc()
         pygame.display.flip()
@@ -49,6 +48,9 @@ def menu_principal():
                 elif e.key == pygame.K_RETURN:
                     cj.iniciar_jogo()
                     lp.main_loop()
+                    # Ao voltar de uma partida (vitória->menu, ou fim de jogo),
+                    # a tela é o menu de novo: retoma a música deste 'galho'.
+                    a.tocar_musica_menu()
 
                 elif e.key == pygame.K_d:
                     if c.estado["nivel_dificuldade_ativa"] == "facil":
@@ -67,5 +69,6 @@ def menu_principal():
 
 
 if __name__ == "__main__":
+    a.tocar_musica_menu()
     t.tela_narrativa()
     menu_principal()

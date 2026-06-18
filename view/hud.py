@@ -7,7 +7,6 @@ import modelo.assets as a
 AMARELO = (255, 255, 0)
 AZUL = (0, 0, 255)
 BRANCO = (255, 255, 255)
-CIANO = (255, 0, 255)
 CINZA = (150, 150, 150)
 PRETO = (0, 0, 0)
 VERDE_MUSGO = (2, 85, 100)

@@ -16,6 +16,10 @@ from controller.ciclo_jogo import (
     game_vitoria,
 )
 
+def processar_fim_de_partida(resultado):
+    if resultado == "reiniciar":
+        main_loop()
+
 
 def main_loop():
     inicio_tempo = time.time()
@@ -73,7 +77,7 @@ def main_loop():
 
         if danger_zone and c.player.colliderect(danger_zone):
             now = pygame.time.get_ticks()
-            if now - c.estado["ultimo_dano_zona_perigo"] >= 500:
+            if now - c.estado.get("ultimo_dano_zona_perigo", 0) >= 500:
                 c.estado["ultimo_dano_zona_perigo"] = now
                 if c.estado["escudo_ativo"]:
                     c.estado["escudo_ativo"] = False
@@ -84,7 +88,7 @@ def main_loop():
                 if a.assets["sfx_dano"]:
                     a.assets["sfx_dano"].play()
                 if c.estado["vida"] <= 0:
-                    game_over()
+                    processar_fim_de_partida(game_over())
                     return
 
         # 2) Colisão Guardião contra Inimigos
@@ -112,7 +116,7 @@ def main_loop():
                         }
                     )
                     if c.estado["vida"] <= 0:
-                        game_over()
+                        processar_fim_de_partida(game_over())
                         return
 
         # 3) Projéteis
@@ -123,7 +127,7 @@ def main_loop():
         if not c.estado["vader_ativo"]:
             colisao_recuo_inimigos()
 
-            # Probabilidade de disparos dos inimigos comuns
+        # Probabilidade de disparos dos inimigos comuns
         taxa_disparo = (
             0.008
             if c.estado["nivel_dificuldade_ativa"] == "facil"
@@ -148,8 +152,13 @@ def main_loop():
 
         # A) Cápsulas de Bacta
         for b in c.bactas[:]:
-            b.y += 2
-            if b.colliderect(c.player.inflate(8, 8)):
+            # Dicionário: {"rect": Rect, "spawn": ticks}
+            b["rect"].y += 2
+            now = pygame.time.get_ticks()
+            if (
+                b["rect"].colliderect(c.player.inflate(8, 8))
+                and now - b.get("spawn", 0) >= c.DROP_PICKUP_DELAY_MS
+            ):
                 teto_vida = 3
                 if (
                     c.estado["vida"] < c.estado["vida_maxima"]
@@ -159,31 +168,41 @@ def main_loop():
                 if a.assets["sfx_item"]:
                     a.assets["sfx_item"].play()
                 c.bactas.remove(b)
-            elif b.top > c.HEIGHT:
+            elif b["rect"].top > c.HEIGHT:
                 c.bactas.remove(b)
 
         # B) Corações (Upgrade de Vida Máxima)
         for coracao in c.coracoes[:]:
-            coracao.y += 2
-            if coracao.colliderect(c.player.inflate(8, 8)):
+            # Dicionário: {"rect": Rect, "spawn": ticks}
+            coracao["rect"].y += 2
+            now = pygame.time.get_ticks()
+            if (
+                coracao["rect"].colliderect(c.player.inflate(8, 8))
+                and now - coracao.get("spawn", 0) >= c.DROP_PICKUP_DELAY_MS
+            ):
                 c.estado["vida_maxima"] = 4
                 if c.estado["vida"] < c.estado["vida_maxima"]:
                     c.estado["vida"] += 1
                 if a.assets["sfx_item"]:
                     a.assets["sfx_item"].play()
                 c.coracoes.remove(coracao)
-            elif coracao.top > c.HEIGHT:
+            elif coracao["rect"].top > c.HEIGHT:
                 c.coracoes.remove(coracao)
 
         # C) Escudos Defletores
         for ed in c.escudo_defletor[:]:
-            ed.y += 2
-            if ed.colliderect(c.player.inflate(8, 8)):
+            # Dicionário: {"rect": Rect, "spawn": ticks}
+            ed["rect"].y += 2
+            now = pygame.time.get_ticks()
+            if (
+                ed["rect"].colliderect(c.player.inflate(8, 8))
+                and now - ed.get("spawn", 0) >= c.DROP_PICKUP_DELAY_MS
+            ):
                 c.estado["escudo_ativo"] = True
                 if a.assets["sfx_item"]:
                     a.assets["sfx_item"].play()
                 c.escudo_defletor.remove(ed)
-            elif ed.top > c.HEIGHT:
+            elif ed["rect"].top > c.HEIGHT:
                 c.escudo_defletor.remove(ed)
 
         # 5) Colisões inimigos
@@ -210,15 +229,30 @@ def main_loop():
                     sorteio = random.random()
                     if sorteio < 0.05:
                         c.coracoes.append(
-                            pygame.Rect(inimigo["rect"].x, inimigo["rect"].y, 32, 32)
+                            {
+                                "rect": pygame.Rect(
+                                    inimigo["rect"].x, inimigo["rect"].y - 40, 32, 32
+                                ),
+                                "spawn": pygame.time.get_ticks(),
+                            }
                         )
                     elif sorteio < 0.13:
                         c.escudo_defletor.append(
-                            pygame.Rect(inimigo["rect"].x, inimigo["rect"].y, 32, 32)
+                            {
+                                "rect": pygame.Rect(
+                                    inimigo["rect"].x, inimigo["rect"].y - 40, 32, 32
+                                ),
+                                "spawn": pygame.time.get_ticks(),
+                            }
                         )
                     elif sorteio < 0.33:
                         c.bactas.append(
-                            pygame.Rect(inimigo["rect"].x, inimigo["rect"].y, 32, 32)
+                            {
+                                "rect": pygame.Rect(
+                                    inimigo["rect"].x, inimigo["rect"].y - 40, 32, 32
+                                ),
+                                "spawn": pygame.time.get_ticks(),
+                            }
                         )
 
         # B) Tiros dos inimigos colidindo com o jogador
@@ -239,7 +273,7 @@ def main_loop():
                 if a.assets["sfx_dano"]:
                     a.assets["sfx_dano"].play()
                 if c.estado["vida"] <= 0:
-                    game_over()
+                    processar_fim_de_partida(game_over())
                     return
 
         # Darth Vader e seus eventos
@@ -264,7 +298,7 @@ def main_loop():
             if c.vader.bottom >= c.player.top:
                 c.estado["vida"] = 0
                 c.estado["motivo_morte"] = "vader_chegou"
-                game_over()
+                processar_fim_de_partida(game_over())
                 return
 
             if random.random() < 0.04:
@@ -317,9 +351,8 @@ def main_loop():
                             c.estado["nivel_dificuldade_ativa"]
                         ]["pontos_vader"]
                         c.estado["score"] += pontos
-                        pygame.mixer.music.stop()
                         c.estado["vitoria_exibida"] = True
-                        game_vitoria()
+                        processar_fim_de_partida(game_vitoria())
                         return
 
         # Renderização final na tela
@@ -329,7 +362,7 @@ def main_loop():
         if c.estado["vida"] <= 0:
             if not c.estado.get("motivo_morte"):
                 c.estado["motivo_morte"] = "vida_zerada"
-            game_over()
+            processar_fim_de_partida(game_over())
             return
 
         if len(c.inimigos) == 0 and not c.estado["vader_ativo"]:

@@ -1,28 +1,8 @@
 import pygame
-import sys
 
 import modelo.assets as a
 import modelo.configuracoes as c
 import view.hud as h
-
-
-def renderizar_botao_msc():
-    img_msc = a.assets.get("img_icone_msc", None)
-    if img_msc:
-        indice_imagem = 1 if c.estado["musica_pausada"] else 0
-        c.screen.blit(img_msc[indice_imagem], c.msc_botao)
-    else:
-        cor_botao = h.VERMELHO_PASTEL if c.estado["musica_pausada"] else h.AMARELO
-        pygame.draw.rect(c.screen, cor_botao, c.msc_botao)
-
-    fonte_msc = a.assets["fonte_hud"].render("(M)", True, h.BRANCO)
-    c.screen.blit(
-        fonte_msc,
-        (
-            c.msc_botao.x + (c.msc_botao.width // 2) - (fonte_msc.get_width() // 2),
-            c.msc_botao.y + 35,
-        ),
-    )
 
 
 def renderizar_projeteis():
@@ -82,13 +62,23 @@ def renderizar_vader():
             pygame.draw.rect(c.screen, (150, 0, 0), c.vader)
 
 
-def renderizar_bactas():
-    for b in c.bactas:
-        if a.assets["img_bacta"]:
-            c.screen.blit(a.assets["img_bacta"], b)
+def _rect_from_drop(item):
+    return item["rect"] if isinstance(item, dict) else item
+
+
+def _renderizar_drop(lista, imagem, cor_padrao, forma_fallback="rect"):
+    for item in lista:
+        rect = _rect_from_drop(item)
+        if imagem:
+            c.screen.blit(imagem, rect)
+        elif forma_fallback == "ellipse":
+            pygame.draw.ellipse(c.screen, cor_padrao, rect)
         else:
-            # Fallback: retângulos
-            pygame.draw.rect(c.screen, h.TURQUESA, b)
+            pygame.draw.rect(c.screen, cor_padrao, rect)
+
+
+def renderizar_bactas():
+    _renderizar_drop(c.bactas, a.assets["img_bacta"], h.TURQUESA)
 
     for v in range(c.estado["vida"]):
         if a.assets["img_coracao"]:
@@ -97,12 +87,17 @@ def renderizar_bactas():
             pygame.draw.rect(c.screen, (255, 182, 193), (110 + v * 35, 55, 20, 20))
 
 
+def renderizar_coracoes():
+    _renderizar_drop(c.coracoes, a.assets["img_coracao"], (255, 182, 193))
+
+
 def renderizar_escudos():
-    for ed in c.escudo_defletor:
-        if a.assets.get("img_escudo"):
-            c.screen.blit(a.assets["img_escudo"], ed)
-        else:
-            pygame.draw.ellipse(c.screen, (0, 191, 255), ed)
+    _renderizar_drop(
+        c.escudo_defletor,
+        a.assets.get("img_escudo"),
+        (0, 191, 255),
+        forma_fallback="ellipse",
+    )
 
 
 def renderizar_aura_protecao():

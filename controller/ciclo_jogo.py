@@ -11,8 +11,8 @@ from controller.inimigos import criar_onda
 
 
 def iniciar_jogo():
-    """Tem a importante missão de limpar todas as listas da memória antes de inicializar a partida."""
-    pygame.mixer.stop()
+    a.parar_todas_as_musicas()
+    a.tocar_musica_tema()
 
     c.estado["vitoria_exibida"] = False
     c.estado["mostrar_mensagem_darth"] = False
@@ -20,15 +20,16 @@ def iniciar_jogo():
     c.estado["score"] = 0
     c.estado["wave"] = 0
     c.estado["vader_ativo"] = False
+    c.estado["motivo_morte"] = ""
 
-    # Posicionamento centralizado inicial do Boss
+    # Posicionamento inicial do Boss
     c.vader.x = c.WIDTH // 2 - c.vader.width // 2
     c.vader.y = 50
     c.estado["vader_acertos"] = 0
 
-    # Gerenciamento de dificuldade (vide modelo.configurações.py):
-    # Define a vida conforme a escolha do menu principal
     c.controle_estado()
+
+    # Define a velocidade inicial dos inimigos conforme a dificuldade ativa
     c.velocidade_inimigos = c.config_dificuldade[c.estado["nivel_dificuldade_ativa"]][
         "veloc_inicial"
     ]
@@ -44,13 +45,16 @@ def limpar_tela():
     c.tiros_inimigos.clear()
     c.bactas.clear()
     c.coracoes.clear()
+    c.escudo_defletor.clear()
     c.explosoes_ativas.clear()
 
     criar_onda(c.estado["wave"])
 
 
 def exibir_mensagem_darth():
+    clock = pygame.time.Clock()
     while True:
+        clock.tick(30)
         c.screen.fill(h.PRETO)
         msg = a.assets["fonte_titulo"].render(
             "DARTH VADER SE APROXIMA!", True, h.VERMELHO
@@ -79,7 +83,6 @@ def exibir_mensagem_darth():
 
 
 def verificar_e_atualizar_ranking():
-    # Melhoria: elaborada função encapsulada pois foi aplicada em vários contextos.
     ranking = rnk.load_ranking()
 
     if len(ranking) < 10 or c.estado["score"] > ranking[-1]["pontuacao"]:
@@ -88,30 +91,28 @@ def verificar_e_atualizar_ranking():
         rnk.exibir_ranking()
 
 
-"""O nome é autoexplicativo: garante inicialização limpa completa antes de
-de engajar um evento ou tela, evitando empilhamento infinito"""
-
-
-def capturar_evento_e_reiniciar_jogo():
+def capturar_evento_e_reiniciar_jogo(permitir_voltar_ao_menu=False):
     for e in pygame.event.get():
         if e.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
         if e.type == pygame.KEYDOWN:
             if e.key == pygame.K_r:
-                pygame.mixer.stop()  # Corta a música de Game Over
-                a.tocar_musica_tema()  # Recarrega a trilha sonora de partida
-                iniciar_jogo()  # Reseta os arrays da memória
+                iniciar_jogo()  # já cuida da troca de música e do reset de estado
                 limpar_tela()
-                return
+                return "reiniciar"
             elif e.key == pygame.K_ESCAPE:
-                pygame.mixer.stop()
+                a.parar_todas_as_musicas()
+                if permitir_voltar_ao_menu:
+                    a.tocar_musica_menu()
+                    return "menu"
                 pygame.quit()
                 sys.exit()
+    return None
 
 
 def game_over():
-    pygame.mixer.music.stop()
+    a.parar_todas_as_musicas()
     if a.assets["sfx_gameover"]:
         a.assets["sfx_gameover"].play()
 
@@ -119,24 +120,14 @@ def game_over():
 
     clock = pygame.time.Clock()
     while True:
-        if c.estado.get("motivo_morte") == "zona_perigo":
-            t.tela_game_over_zona_perigo()
-        else:
-            t.tela_game_over()
-
-        motivo_antes = c.estado.get("motivo_morte")
-        capturar_evento_e_reiniciar_jogo()
-        motivo_depois = c.estado.get("motivo_morte")
-
-        # Se motivo foi alterado, significa que o jogo foi reiniciado
-        if motivo_antes and not motivo_depois:
+        clock.tick(30)
+        t.tela_game_over()
+        if capturar_evento_e_reiniciar_jogo() == "reiniciar":
             return
-
-        clock.tick(60)
 
 
 def game_vitoria():
-    pygame.mixer.music.stop()
+    a.parar_todas_as_musicas()
     if a.assets["sfx_vitoria"]:
         a.assets["sfx_vitoria"].play()
 
@@ -144,6 +135,8 @@ def game_vitoria():
 
     clock = pygame.time.Clock()
     while True:
+        clock.tick(30)
         t.tela_vitoria()
-        capturar_evento_e_reiniciar_jogo()
-        clock.tick(60)
+        resultado = capturar_evento_e_reiniciar_jogo(permitir_voltar_ao_menu=True)
+        if resultado:
+            return resultado

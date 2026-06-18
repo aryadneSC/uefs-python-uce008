@@ -1,11 +1,9 @@
 import os
-import sys
 import pygame
-from os.path import join
 
 from modelo.configuracoes import WIDTH, HEIGHT
 
-"""Antigamente, os assets dependiam do diretório de execução da IDE...
+"""Antigamente, os assets dependiam do diretório de execução da IDE,
 o que gerava erros de FileNotFoundError. Isto centraliza a localização 
 da pasta 'assets' independentemente de onde o programa seja executado."""
 
@@ -54,7 +52,7 @@ def caminho_img(pasta, arquivo, tamanho=None):
             if tamanho:
                 img = pygame.transform.scale(img, tamanho)
             return img
-        except:
+        except Exception:
             return None
     return None
 
@@ -68,19 +66,13 @@ def carregar_som(pasta, arquivo, is_music=False):
                 return True
             else:
                 return pygame.mixer.Sound(caminho)
-        except:
-            return "Não foi possível carregar som em ", caminho
+        except Exception as erro:
+            print(f"[assets] Falha ao carregar som em {caminho}: {erro}")
+            return None
     return None
 
 
 def inicializar_assets():
-    """Aloca na memória todas as imagens, fontes e efeitos sonoros do jogo.
-    Executada APÓS a inicialização do display no jogo.py.
-    """
-
-    print(os.getcwd())
-    print(montar_caminho("space", "space-2.png"))
-
     assets["img_fundo"] = caminho_img("space", "space-2.png", (WIDTH, HEIGHT))
     assets["img_bacta"] = caminho_img("space", "bacta.png", (32, 32))
     assets["img_coracao"] = caminho_img("space", "coracao.png", (32, 32))
@@ -96,7 +88,7 @@ def inicializar_assets():
     # Animação de explosão dos Tie Fighters (5 frames numerados de 0 a 4)
     assets["img_explosao_frames"] = []
     for i in range(5):
-        frame = caminho_img("explosion", f"{i}.png", (45, 45))
+        frame = caminho_img("explosion", f"{i }.png", (45, 45))
         if frame:
             assets["img_explosao_frames"].append(frame)
 
@@ -133,10 +125,23 @@ def inicializar_assets():
             sfx.set_volume(volume)
 
 
-def tocar_musica_tema():
-    if carregar_som("audio", "meteorstheme_v1.ogg", is_music=True):
+def parar_todas_as_musicas():
+    pygame.mixer.music.stop()
+    pygame.mixer.stop()
+
+
+def tocar_musica(caminho_pasta, nome_arquivo, volume=0.4, loop=-1):
+    if carregar_som(caminho_pasta, nome_arquivo, is_music=True):
         try:
-            pygame.mixer.music.set_volume(0.4)
-            pygame.mixer.music.play(-1)
-        except:
-            pass
+            pygame.mixer.music.set_volume(volume)
+            pygame.mixer.music.play(loop)
+        except Exception as erro:
+            print(f"[assets] Falha ao reproduzir música: {erro}")
+
+
+def tocar_musica_tema():
+    tocar_musica("audio/sfx", "tema.ogg", volume=0.8, loop=-1)
+
+
+def tocar_musica_menu():
+    tocar_musica("audio", "menu.ogg", volume=0.4, loop=-1)

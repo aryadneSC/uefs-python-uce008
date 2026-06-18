@@ -1,5 +1,3 @@
-"""Módulo reservado para atualizações, aprimoramentos, entre outros, para projéteis."""
-
 import modelo.configuracoes as c
 
 

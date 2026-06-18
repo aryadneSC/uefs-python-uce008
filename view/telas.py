@@ -98,9 +98,10 @@ def tela_partida(inicio_tempo, tempo_pausado_total):
     r.renderizar_aura_protecao()
     r.renderizar_tie_fighters()
     r.renderizar_bactas()
+    r.renderizar_coracoes()
     r.renderizar_escudos()
     r.renderizar_inimigos_explodindo()
-    r.renderizar_botao_msc()
+    h.desenhar_botao_pausar_msc()
     r.renderizar_projeteis()
     r.renderizar_vader()
 
@@ -149,18 +150,16 @@ def tela_game_over():
 
     motivo = c.estado.get("motivo_morte", "")
     detalhe_texto = {
-        "zona_perigo": "Você foi para o lado negro da Força!",
+        "zona_perigo": "Você foi para a zona de perigo!",
         "colisao_inimigo": "Você colidiu com um inimigo!",
         "laser_vader": "Darth Vader te derrubou!",
-        "laser_inimigo": "Um tiro inimigo te acertou!",
+        "laser_inimigo": "Um laser inimigo te acertou!",
         "vader_chegou": "Darth Vader invadiu o Planeta!",
         "vida_zerada": "Sua vida chegou a zero.",
-    }.get(motivo, "Você foi derrotado pelo inimigo.")
+    }.get(motivo, "Você foi derrotado!")
 
     detalhe = a.assets["fonte_hud"].render(detalhe_texto, True, h.BRANCO)
-    instr = a.assets["fonte_hud"].render(
-        "R para Reiniciar - ESC para Sair", True, h.BRANCO
-    )
+    instr = a.assets["fonte_hud"].render("[R] Reiniciar - [ESC] Sair", True, h.BRANCO)
 
     h.desenhar_texto_centralizado(msg, c.HEIGHT // 3)
     h.desenhar_texto_centralizado(detalhe, c.HEIGHT // 3 + 50)
@@ -181,7 +180,7 @@ def tela_game_over_zona_perigo():
 def tela_vitoria():
     c.screen.fill(h.PRETO)
     msg = a.assets["fonte_titulo"].render(
-        "VOCÊ VENCEU! A GALÁXIA ESTÁ SALVA!", True, h.VERDE
+        "VITÓRIA! A GALÁXIA ESTÁ SALVA!", True, h.VERDE
     )
     instr = a.assets["fonte_hud"].render(
         "Pressione R para Reiniciar ou ESC para voltar ao menu", True, h.BRANCO
