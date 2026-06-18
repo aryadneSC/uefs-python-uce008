@@ -45,9 +45,9 @@ estado = {
 # 1 = Tie Fighter e 2 = Espaço vazio
 # Facilmente modificável :D
 ondas = [
-[0,1,0,1,0,1,0,0 ],
-[0,0,1,0,1,0,0,1 ],
-[1,0,0,1,0,0,1,0 ],
+[0,1,0,1,0,1,0,0],
+[0,0,1,0,1,0,0,1],
+[1,0,0,1,0,0,1,0],
 ]
 
 config_dificuldade = {
@@ -73,14 +73,14 @@ def alternar_pausar_musica ():
     estado ["musica_pausada"] = not estado ["musica_pausada"]
 
     if estado ["musica_pausada"]:
-        pygame.mixer.music.pause ()
+        pygame.mixer.music.pause()
     else :
-        pygame.mixer.music.unpause ()
+        pygame.mixer.music.unpause()
 
 
-def chk_colisao_player_inimigos ():
+def chk_colisao_player_inimigos():
     for inimigo in inimigos [:]:
         if player.colliderect (inimigo ['rect']):
-            inimigos.remove (inimigo )
-            return {'x':inimigo ['rect'].x,'y':inimigo ['rect'].y }
+            inimigos.remove (inimigo)
+            return {'x':inimigo ['rect'].x,'y':inimigo ['rect'].y}
     return None 

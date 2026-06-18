@@ -91,7 +91,7 @@ def capturar_evento_e_reiniciar_jogo ():
                 if e.key == pygame.K_r :
                     pygame.mixer.stop ()# Corta a música de Game Over
                     a.tocar_musica_tema ()# Recarrega a trilha sonora de partida
-                    iniciar_jogo ()# Reseta os arrays da memória
+                    iniciar_jogo ()         # Reseta os arrays da memória
                     limpar_tela ()
                     return 
                 elif e.key == pygame.K_ESCAPE :
@@ -100,7 +100,6 @@ def capturar_evento_e_reiniciar_jogo ():
                     sys.exit ()
 
 
-# Guia 5: JSON
 def game_over ():
     pygame.mixer.music.stop ()
     if a.assets ["sfx_gameover"]:
@@ -108,10 +107,11 @@ def game_over ():
 
     verificar_e_atualizar_ranking ()
 
+    clock = pygame.time.Clock ()
     while True :
         t.tela_game_over ()
         capturar_evento_e_reiniciar_jogo ()
-        return 
+        clock.tick (60)
 
 
 def game_vitoria ():
@@ -121,7 +121,8 @@ def game_vitoria ():
 
     verificar_e_atualizar_ranking ()
 
+    clock = pygame.time.Clock ()
     while True :
         t.tela_vitoria ()
         capturar_evento_e_reiniciar_jogo ()
-        return 
+        clock.tick (60)
