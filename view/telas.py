@@ -9,7 +9,6 @@ import view.renderizacao as r
 
 
 def tela_narrativa ():
-    """Exibe a introdução de Star Wars. Retorna apenas quando ENTER for pressionado."""
     while True :
         c.screen.fill (h.PRETO )
         h.desenhar_botao_pausar_msc ()
@@ -18,22 +17,21 @@ def tela_narrativa ():
         c.screen.blit (titulo_narrativa,(c.WIDTH //2 -titulo_narrativa.get_width ()//2,70 ))
 
         texto = [
-        "A terrível Frota Imperial avança",
-        "contra a base secreta",
-        "do Planeta Aliado Kashyyyk!",
-        "Nossas forças estão quase no fim...",
-        "",
-        "Guardião! Você é nossa única esperança",
-        "de expulsar as tropas inimigas.",
+        "A terrível Frota Imperial cerca",
+        "a base aliada no Planeta Kashyyyk.",
+        "Nossos escudos estão falhando!","",
+        "Guardião, sua missão é interceptar",
+        "a vanguarda aérea, enquanto",
+        "nós cuidamos dos terrestres!","",
         "Que a Força esteja com você...","",
         ]
-
-        instrucao = a.assets ["fonte_titulo"].render ("Pressione ENTER para iniciar",True,h.VERDE_MUSGO )
-        c.screen.blit (instrucao,(c.WIDTH //2 -instrucao.get_width ()//2,c.HEIGHT -70 ))
 
         for i,linha in enumerate (texto ):
             txt = a.assets ["fonte_titulo"].render (linha,True,h.BRANCO )
             c.screen.blit (txt,(c.WIDTH //2 -txt.get_width ()//2,c.HEIGHT //4 +i *40 ))
+            
+        instrucao = a.assets ["fonte_titulo"].render ("Pressione ENTER para iniciar",True,h.VERDE_MUSGO )
+        c.screen.blit (instrucao,(c.WIDTH //2 -instrucao.get_width ()//2,c.HEIGHT -70 ))
 
         pygame.display.flip ()
 
@@ -45,7 +43,7 @@ def tela_narrativa ():
                 if e.key == pygame.K_m :
                     c.alternar_pausar_musica ()
                 elif e.key == pygame.K_RETURN :
-                    return # Sai da tela narrativa de forma limpa
+                    return
 
 
 def tela_menu_principal ():
