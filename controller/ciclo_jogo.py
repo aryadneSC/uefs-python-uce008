@@ -29,7 +29,7 @@ def iniciar_jogo ():
     # Gerenciamento de dificuldade (vide modelo.configurações.py):
     # Define a vida conforme a escolha do menu principal
     c.controle_estado ()
-    c.velocidade_inimigos = c.config_dificuldade [c.estado ["nivel_dificuldade_ativa"]]['inicial']
+    c.velocidade_inimigos = c.config_dificuldade [c.estado ["nivel_dificuldade_ativa"]]['veloc_inicial']
 
     # Reseta a posição do quadrado do jogador
     c.player.x = c.WIDTH //2 -c.player.width //2 

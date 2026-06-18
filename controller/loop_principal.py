@@ -59,6 +59,29 @@ def main_loop():
         # Mantém o player dentro dos limites da janela
         c.player.clamp_ip(pygame.Rect (0,0,c.WIDTH,c.HEIGHT))
 
+        # Zona de perigo dos inimigos
+        danger_zone = None
+        if c.estado["vader_ativo"]:
+            danger_zone = pygame.Rect(0, 0, c.WIDTH, c.vader.top)
+        elif c.inimigos:
+            top_inimigo = min(inimigo['rect'].top for inimigo in c.inimigos)
+            danger_zone = pygame.Rect(0, 0, c.WIDTH, top_inimigo)
+
+        if danger_zone and c.player.colliderect(danger_zone):
+            now = pygame.time.get_ticks()
+            if now - c.estado["ultimo_dano_zona_perigo"] >= 500:
+                c.estado["ultimo_dano_zona_perigo"] = now
+                if c.estado["escudo_ativo"]:
+                    c.estado["escudo_ativo"] = False
+                else:
+                    c.estado["vida"] -= 1
+                c.estado["motivo_morte"] = "zona_perigo"
+                if a.assets["sfx_dano"]:
+                    a.assets["sfx_dano"].play()
+                if c.estado["vida"] <= 0:
+                    game_over()
+                    return
+
         # 2) Colisão Guardião contra Inimigos
         if not c.estado["vader_ativo"]:
             for inimigo in c.inimigos[:]:
@@ -70,6 +93,7 @@ def main_loop():
                         c.estado["escudo_ativo"] = False 
                     else:
                         c.estado["vida"] -= 1
+                    c.estado["motivo_morte"] = "colisao_inimigo"
 
                     if a.assets["sfx_dano"]:a.assets ["sfx_dano"].play()
                     c.explosoes_ativas.append ({
@@ -164,6 +188,7 @@ def main_loop():
                     c.estado ["escudo_ativo"] = False 
                 else:
                     c.estado ["vida"]-= 2 if laser ['vader']else 1 
+                c.estado["motivo_morte"] = "laser_vader" if laser ['vader'] else "laser_inimigo"
 
                 if a.assets ["sfx_dano"]: a.assets ["sfx_dano"].play()
                 if c.estado ["vida"] <= 0:
@@ -181,12 +206,29 @@ def main_loop():
         if c.estado ["vader_ativo"]:
             c.vader.x += c.estado ["vader_direcao"] * 4 
 
+            danger_zone = pygame.Rect(0, 0, c.WIDTH, c.vader.top)
+            if c.player.colliderect(danger_zone):
+                now = pygame.time.get_ticks()
+                if now - c.estado["ultimo_dano_zona_perigo"] >= 500:
+                    c.estado["ultimo_dano_zona_perigo"] = now
+                    if c.estado["escudo_ativo"]:
+                        c.estado["escudo_ativo"] = False
+                    else:
+                        c.estado["vida"] -= 1
+                    c.estado["motivo_morte"] = "zona_perigo"
+                    if a.assets["sfx_dano"]:
+                        a.assets["sfx_dano"].play()
+                    if c.estado["vida"] <= 0:
+                        game_over()
+                        return 
+
             if c.vader.x <= 10 or c.vader.x + c.vader.width >= c.WIDTH - 10:
                 c.estado["vader_direcao"] *= -1
                 c.vader.y += 20
 
             if c.vader.bottom >= c.player.top:
                 c.estado ["vida"] = 0 
+                c.estado["motivo_morte"] = "vader_chegou"
                 game_over ()
                 return 
 
@@ -199,7 +241,7 @@ def main_loop():
             if 'dx'in laser:
                 laser ['rect'].x += laser ['dx']
 
-                # 3) Tiros do Guardião contra o Darth Vader
+        # 3) Tiros do Guardião contra o Darth Vader
         if c.estado ["vader_ativo"]and not c.estado ["vitoria_exibida"]:
             for laser in c.tiros[:]:
                 if laser.colliderect (c.vader.inflate (6,6)):
@@ -225,6 +267,8 @@ def main_loop():
         pygame.display.flip()
 
         if c.estado ["vida"]<= 0 :
+            if not c.estado.get("motivo_morte"):
+                c.estado["motivo_morte"] = "vida_zerada"
             game_over()
             return 
 

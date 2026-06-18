@@ -113,7 +113,7 @@ def inicializar_assets():
     assets ["sfx_laser"] = carregar_som ('audio/sfx','laser.ogg')
     assets ["sfx_explosao"] = carregar_som ('audio/sfx','explosao.ogg')
     assets ["sfx_dano"] = carregar_som ('audio/sfx','dano.ogg')
-    assets ["sfx_item"] = carregar_som ('audio/sfx','bacta.ogg')
+    assets ["sfx_item"] = carregar_som ('audio/sfx','item.ogg')
     assets ["sfx_gameover"] = carregar_som ('audio/sfx','gameover.ogg')
     assets ["sfx_vitoria"] = carregar_som ('audio/sfx','vitoria.ogg')
 

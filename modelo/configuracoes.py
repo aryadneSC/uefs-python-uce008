@@ -38,7 +38,9 @@ estado = {
 "vitoria_exibida":False,
 "pause":False,
 "mostrar_mensagem_darth":False,
-"musica_pausada":False 
+"musica_pausada":False,
+"ultimo_dano_zona_perigo":0,
+"motivo_morte":"" 
 }
 
 #  Explicação: Cada lista representa uma linha horizontal de spawn.
@@ -51,15 +53,17 @@ ondas = [
 ]
 
 config_dificuldade = {
-'facil':{'inicial':1.5,'limite':3.0,'incremento':0.2,'pontos_vader':200 },
-'medio':{'inicial':2.0,'limite':3.5,'incremento':0.3,'pontos_vader':300 },
-'dificil':{'inicial':3.0,'limite':4.0,'incremento':0.4,'pontos_vader':400 }
+'facil':{'veloc_inicial':1.5,'limite':3.0,'incremento':0.2,'pontos_vader':200 },
+'medio':{'veloc_inicial':2.0,'limite':3.5,'incremento':0.3,'pontos_vader':300 },
+'dificil':{'veloc_inicial':3.0,'limite':4.0,'incremento':0.4,'pontos_vader':400 }
 }
 
 
 def controle_estado ():
     estado ["vida_maxima"] = 3 
     estado ["escudo_ativo"] = False 
+    estado ["ultimo_dano_zona_perigo"] = 0 
+    estado ["motivo_morte"] = "" 
 
     if estado ["nivel_dificuldade_ativa"] == 'facil':
         estado ["vida"] = 3 

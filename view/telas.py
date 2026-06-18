@@ -113,10 +113,37 @@ def gerenciar_pausa ():
 def tela_game_over ():
     c.screen.fill (h.PRETO )
     msg = a.assets ["fonte_titulo"].render ("GAME OVER",True,h.VERMELHO )
+
+    motivo = c.estado.get("motivo_morte","")
+    if motivo == "zona_perigo":
+        detalhe_texto = "Você entrou na zona de perigo inimiga!"
+    elif motivo == "colisao_inimigo":
+        detalhe_texto = "Você colidiu com um inimigo!"
+    elif motivo == "laser_vader":
+        detalhe_texto = "Um tiro de Darth Vader te atingiu!"
+    elif motivo == "laser_inimigo":
+        detalhe_texto = "Um tiro inimigo te acertou!"
+    elif motivo == "vader_chegou":
+        detalhe_texto = "Darth Vader alcançou sua posição!"
+    else:
+        detalhe_texto = "Sua vida chegou a zero."
+
+    detalhe = a.assets ["fonte_hud"].render (detalhe_texto,True,h.BRANCO )
     instr = a.assets ["fonte_hud"].render ("R para Reiniciar - ESC para Sair",True,h.BRANCO )
 
     h.desenhar_texto_centralizado (msg,c.HEIGHT //3 )
-    h.desenhar_texto_centralizado (instr,c.HEIGHT //3 +60 )
+    h.desenhar_texto_centralizado (detalhe,c.HEIGHT //3 +50 )
+    h.desenhar_texto_centralizado (instr,c.HEIGHT //3 +100 )
+    pygame.display.flip ()
+
+
+def tela_game_over_zona_perigo():
+    c.screen.fill (h.PRETO )
+    msg = a.assets ["fonte_titulo"].render ("ZONA DE PERIGO!!",True,h.VERMELHO )
+    detalhe = a.assets ["fonte_hud"].render ("Pressione R para Reiniciar ou ESC para voltar ao menu",True,h.BRANCO )
+
+    h.desenhar_texto_centralizado (msg,c.HEIGHT //3 )
+    h.desenhar_texto_centralizado (detalhe,c.HEIGHT //3 +50 )
     pygame.display.flip ()
 
 
